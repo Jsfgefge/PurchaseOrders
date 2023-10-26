@@ -1,7 +1,6 @@
 ﻿@page "/tax"
 @using BlazorPurchaseOrders.Data
-@inject ITaxService TaxService
-@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Navigations 
 
 <h3>Tax Rates</h3>
 <br />
@@ -21,7 +20,9 @@
                     Width="40">
         </GridColumn>
     </GridColumns>
-    <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="Tax"></GridEvents>
+    <GridEvents RowSelected="RowSelectedHandler" 
+                OnToolbarClick="ToolbarClickHandler" 
+                TValue="Tax"></GridEvents>
 </SfGrid>
 
 <SfDialog @ref="DialogAddEditTax" IsModal = "true" Width="500px" ShowCloseIcon="true" Visible = "false">
@@ -49,72 +50,25 @@
     </EditForm>
 </SfDialog>
 
+<SfDialog @ref="DialogDeleteTax" IsModal="true" Width="500px" ShowCloseIcon="true" Visible="false">
+    <DialogTemplates>
+        <Header>Confirm Delete</Header>
+        <Content>
+            <SfTextBox Enabled="false" Placeholder="Description" FloatLabelType="@FloatLabelType.Always" @bind-Value="addeditTax.TaxDescription"></SfTextBox>
+            <SfNumericTextBox Enabled="false" Placeholder="Tax Rate" width = "50" Format = "p2" FloatLabelType="@FloatLabelType.Always" @bind-Value="addeditTax.TaxRate"></SfNumericTextBox>
+            <br />
+            <br />
+            <span class="text-danger">Please confirm that you want to delete this record</span>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Delete" IsPrimary="true" OnClick="@ConfirmDeleteYes"></DialogButton>
+        <DialogButton Content="Candel" IsPrimary="false" OnClick="@ConfirmDeleteNo"></DialogButton>
+    </DialogButtons>
+</SfDialog>
+
 <WarningPage @ref="Warning" WarningHeaderMessage ="@WarningHeaderMessage" WarningContentMessage="@WarningContentMessage"></WarningPage>
     
 
 @code{
-    IEnumerable<Tax> tax;
-    private List<ItemModel> Toolbaritems = new List<ItemModel>();
-
-    SfDialog DialogAddEditTax;
-    Tax addeditTax = new Tax();
-    string HeaderText = "";
-
-    WarningPage Warning;
-    string WarningHeaderMessage = "";
-    string WarningContentMessage = "";
-
-    protected override async Task OnInitializedAsync() {
-        //Populate the list of VAT object from the VAT table
-        tax = await TaxService.TaxList();
-        Toolbaritems.Add(new ItemModel() { Text = "Add", TooltipText = "Add a new Tax Rate", PrefixIcon = "e-add" });
-        Toolbaritems.Add(new ItemModel() { Text = "Edit", TooltipText = "Edit Selected Tax Rate", PrefixIcon = "e-edit" });
-        Toolbaritems.Add(new ItemModel() { Text = "Delete", TooltipText = "Delete Selected Tax Rate", PrefixIcon = "e-delete" });
-    }
-
-    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args) {
-        if(args.Item.Text == "Add") {
-            //Code for adding goes here
-            addeditTax = new Tax(); // Ensures a blank form when adding
-            HeaderText = "Add Tax Rate";
-            await this.DialogAddEditTax.Show();
-        }
-        if(args.Item.Text == "Edit") {
-            //Code for editing ogoes here
-        }
-        if(args.Item.Text == "Delete") {
-
-        }        
-    }
-    protected async Task TaxSave() {
-        if(addeditTax.TaxID == 0) {
-            int Succes = await TaxService.TaxInsert(addeditTax.TaxDescription, addeditTax.TaxRate);
-            if (Succes != 0) {
-                //Tax Rate already exists
-                WarningHeaderMessage = "Warning";
-                WarningContentMessage = "This Tax DEscription already exists; it cannot be added again";
-                Warning.OpenDialog();
-                //Data is left in the dialog so the ser can see the problem.
-            }
-            else {
-                //Clear te dialog and is ready for another entre 
-                //User myst specifically close or cancel the dialog
-                addeditTax = new Tax();
-            }
-        }
-        else {
-            //Item is being edited
-        }
-
-        //Close Dialog
-        //await CloseDialog();
-        
-        //Refresh datagrid
-        tax = await TaxService.TaxList();
-        StateHasChanged();
-    }
-
-    private async Task CloseDialog() {
-        await this.DialogAddEditTax.Hide();
-    }
 }

@@ -50,18 +50,21 @@ namespace BlazorPurchaseOrders.Data {
         }
         // Update one Tax row based on its TaxID (SQL Update)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> TaxUpdate(Tax tax) {
+        public async Task<int> TaxUpdate(string TaxDescription, decimal TaxRate, int TaxID, bool TaxIsArchived) {
+            int Success = 0;
+            var parameters  = new DynamicParameters();
+            parameters.Add("TaxDescription", TaxDescription, DbType.String);
+            parameters.Add("TaxRate", TaxRate, DbType.String);
+            parameters.Add("TaxId", TaxID, DbType.Int32);
+            parameters.Add("TaxIsArchived", TaxIsArchived, DbType.Boolean);
+            parameters.Add("@ReturnValue", DbType.Int32, direction:ParameterDirection.ReturnValue);
+
+
             using (var conn = new SqlConnection(_configuration.Value)) {
-                var parameters = new DynamicParameters();
-                parameters.Add("TaxID", tax.TaxID, DbType.Int32);
-
-                parameters.Add("TaxDescription", tax.TaxDescription, DbType.String);
-                parameters.Add("TaxRate", tax.TaxRate, DbType.Decimal);
-                parameters.Add("TaxIsArchived", tax.TaxIsArchived, DbType.Boolean);
-
                 await conn.ExecuteAsync("spTax_Update", parameters, commandType: CommandType.StoredProcedure);
+                Success = parameters.Get<int>("@ReturnValue");
             }
-            return true;
+            return Success;
         }
 
     }

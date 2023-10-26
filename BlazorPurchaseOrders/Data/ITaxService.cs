@@ -9,6 +9,6 @@ namespace BlazorPurchaseOrders.Data {
         Task<int> TaxInsert(string TaxDescription, Decimal TaxRate);
         Task<IEnumerable<Tax>> TaxList();
         Task<Tax> Tax_GetOne(int TaxID);
-        Task<bool> TaxUpdate(Tax tax);
+        Task<int> TaxUpdate(string TaxDescription, decimal TaxRate, int TaxID, bool TaxIsArchived);
     }
 }
