@@ -32,12 +32,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/TaxPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGF4UGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Shared/LoginDisplay.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luRGlzcGxheS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Shared/SurveyPrompt.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Shared/WarningPage.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFdhcm5pbmdQYWdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/_Imports.razor]

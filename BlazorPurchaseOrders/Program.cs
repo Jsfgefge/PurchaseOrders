@@ -24,7 +24,10 @@ builder.Services.AddSingleton<WeatherForecastService>();
 var sqlConnectionConfiguration = new SqlConnectionConfiguration(builder.Configuration.GetConnectionString("SqlDBContext"));
 builder.Services.AddSingleton(sqlConnectionConfiguration);
 builder.Services.AddScoped<IPOHeaderService, POHeaderService>();
-builder.ervices.AddScoped<IPOLineService, POLineService>();
+builder.Services.AddScoped<IPOLineService, POLineService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
+builder.Services.AddScoped<ITaxService, TaxService>();
 
 builder.Services.AddSyncfusionBlazor();
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("@32322e302e30VFxOfkDIwwqo1kFDSDH8fmLKW9cgzkwJ7RLZFaPfOuA=");
