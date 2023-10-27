@@ -20,6 +20,7 @@ namespace BlazorPurchaseOrders.Data {
         public string SupplierEmail { get; set; }
         [Required]
         public bool SupplierIsArchived { get; set; }
+        public string CombinedAddress { get; }
 
     }
 }

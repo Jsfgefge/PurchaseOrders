@@ -6,7 +6,7 @@ using BlazorPurchaseOrders.Shared;
 using Syncfusion.Blazor.Grids;
 
 namespace BlazorPurchaseOrders.Pages {
-    public partial class TaxPage : ComponentBase{
+    public partial class TaxPage : ComponentBase {
         [Inject] ITaxService TaxService { get; set; }
 
         IEnumerable<Tax> tax;

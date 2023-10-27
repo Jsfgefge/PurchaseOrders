@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using Syncfusion.Blazor.Charts.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace BlazorPurchaseOrders.Data {
@@ -14,21 +16,24 @@ namespace BlazorPurchaseOrders.Data {
         }
         // Add (create) a Supplier table row (SQL Insert)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> SupplierInsert(Supplier supplier) {
-            using (var conn = new SqlConnection(_configuration.Value)) {
-                var parameters = new DynamicParameters();
-                parameters.Add("SupplierName", supplier.SupplierName, DbType.String);
-                parameters.Add("SupplierAddress1", supplier.SupplierAddress1, DbType.String);
-                parameters.Add("SupplierAddress2", supplier.SupplierAddress2, DbType.String);
-                parameters.Add("SupplierAddress3", supplier.SupplierAddress3, DbType.String);
-                parameters.Add("SupplierPostCode", supplier.SupplierPostCode, DbType.String);
-                parameters.Add("SupplierEmail", supplier.SupplierEmail, DbType.String);
-                parameters.Add("SupplierIsArchived", supplier.SupplierIsArchived, DbType.Boolean);
-
-                // Stored procedure method
+        public async Task<int> SupplierInsert(string SupplierName, string SupplierAddress1, string SupplierAddress2, string SupplierAddress3, string SupplierPostCode, string SupplierEmail) {
+            int Success = 0;
+            var parameters = new DynamicParameters();
+            parameters.Add("SupplierName", SupplierName, DbType.String);
+            parameters.Add("SupplierAddress1", SupplierAddress1, DbType.String);
+            parameters.Add("SupplierAddress2", SupplierAddress2, DbType.String);
+            parameters.Add("SupplierAddress3", SupplierAddress3, DbType.String);
+            parameters.Add("SupplierPostCode", SupplierPostCode, DbType.String);
+            parameters.Add("SupplierEmail", SupplierEmail, DbType.String);
+            parameters.Add("@ReturnValue", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            using(var conn = new SqlConnection(_configuration.Value)) {
+                //Store procedure method
                 await conn.ExecuteAsync("spSupplier_Insert", parameters, commandType: CommandType.StoredProcedure);
+
+                Success = parameters.Get<int>("@ReturnValue");
             }
-            return true;
+            return Success;
+
         }
         // Get a list of supplier rows (SQL Select)
         // This only works if you're already created the stored procedure.
@@ -53,22 +58,23 @@ namespace BlazorPurchaseOrders.Data {
         }
         // Update one Supplier row based on its SupplierID (SQL Update)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> SupplierUpdate(Supplier supplier) {
-            using (var conn = new SqlConnection(_configuration.Value)) {
-                var parameters = new DynamicParameters();
-                parameters.Add("SupplierID", supplier.SupplierID, DbType.Int32);
-
-                parameters.Add("SupplierName", supplier.SupplierName, DbType.String);
-                parameters.Add("SupplierAddress1", supplier.SupplierAddress1, DbType.String);
-                parameters.Add("SupplierAddress2", supplier.SupplierAddress2, DbType.String);
-                parameters.Add("SupplierAddress3", supplier.SupplierAddress3, DbType.String);
-                parameters.Add("SupplierPostCode", supplier.SupplierPostCode, DbType.String);
-                parameters.Add("SupplierEmail", supplier.SupplierEmail, DbType.String);
-                parameters.Add("SupplierIsArchived", supplier.SupplierIsArchived, DbType.Boolean);
-
+        public async Task<int> SupplierUpdate(int SupplierID, string SupplierName, string SupplierAddress1, string SupplierAddress2, string SupplierAddress3, string SupplierPostCode, string SupplierEmail, bool SupplierIsArchived) {
+            int Success = 0;
+            var parameters = new DynamicParameters();
+            parameters.Add("SupplierID", SupplierID, DbType.Int32);
+            parameters.Add("SupplierName", SupplierName, DbType.String);
+            parameters.Add("SupplierAddress1", SupplierAddress1, DbType.String);
+            parameters.Add("SupplierAddress2", SupplierAddress2, DbType.String);
+            parameters.Add("SupplierAddress3", SupplierAddress3, DbType.String);
+            parameters.Add("SupplierPostCode", SupplierPostCode, DbType.String);
+            parameters.Add("SupplierEmail", SupplierEmail, DbType.String);
+            parameters.Add("SupplierIsArchived", SupplierIsArchived, DbType.Boolean);
+            parameters.Add("@ReturnValue", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            using(var conn = new SqlConnection(_configuration.Value)) {
                 await conn.ExecuteAsync("spSupplier_Update", parameters, commandType: CommandType.StoredProcedure);
+                Success = parameters.Get<int>("@ReturnValue");
             }
-            return true;
+            return Success;
         }
     }
 }
