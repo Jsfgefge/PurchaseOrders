@@ -16,6 +16,6 @@ namespace BlazorPurchaseOrders.Data {
         public int ProductSupplierID { get; set; }
         [Required]
         public bool ProductIsArchived { get; set; }
-
+        public string SupplierName { get; }
     }
 }

@@ -15,19 +15,22 @@ namespace BlazorPurchaseOrders.Data {
         }
         // Add (create) a Product table row (SQL Insert)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> ProductInsert(Product product) {
-            using (var conn = new SqlConnection(_configuration.Value)) {
-                var parameters = new DynamicParameters();
-                parameters.Add("ProductCode", product.ProductCode, DbType.String);
-                parameters.Add("ProductDescription", product.ProductDescription, DbType.String);
-                parameters.Add("ProductUnitPrice", product.ProductUnitPrice, DbType.Decimal);
-                parameters.Add("ProductSupplierID", product.ProductSupplierID, DbType.Int32);
-                parameters.Add("ProductIsArchived", product.ProductIsArchived, DbType.Boolean);
-
-                // Stored procedure method
+        public async Task<int> ProductInsert(string ProductCode,
+                                             string ProductDescription,
+                                             decimal ProductUnitPrice,
+                                             Int32 ProductSupplierID) {
+            int Succes = 0;
+            var parameters = new DynamicParameters();
+            parameters.Add("ProductCode", ProductCode, DbType.String);
+            parameters.Add("ProductDescription", ProductDescription, DbType.String);
+            parameters.Add("ProductUnitPrice", ProductUnitPrice, DbType.Decimal);
+            parameters.Add("ProductSupplierID", ProductSupplierID, DbType.Int32);
+            parameters.Add("@ReturnValue", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            using(var conn = new SqlConnection(_configuration.Value)) {
                 await conn.ExecuteAsync("spProduct_Insert", parameters, commandType: CommandType.StoredProcedure);
+                Succes = parameters.Get<int>("@ReturnValue");
             }
-            return true;
+            return Succes;
         }
         // Get a list of product rows (SQL Select)
         // This only works if you're already created the stored procedure.
@@ -52,20 +55,27 @@ namespace BlazorPurchaseOrders.Data {
         }
         // Update one Product row based on its ProductID (SQL Update)
         // This only works if you're already created the stored procedure.
-        public async Task<bool> ProductUpdate(Product product) {
-            using (var conn = new SqlConnection(_configuration.Value)) {
-                var parameters = new DynamicParameters();
-                parameters.Add("ProductID", product.ProductID, DbType.Int32);
-
-                parameters.Add("ProductCode", product.ProductCode, DbType.String);
-                parameters.Add("ProductDescription", product.ProductDescription, DbType.String);
-                parameters.Add("ProductUnitPrice", product.ProductUnitPrice, DbType.Decimal);
-                parameters.Add("ProductSupplierID", product.ProductSupplierID, DbType.Int32);
-                parameters.Add("ProductIsArchived", product.ProductIsArchived, DbType.Boolean);
-
+        public async Task<int> ProductUpdate(int ProductID, 
+                                             string ProductCode, 
+                                             string ProductDescription,
+                                             decimal ProductUnitPrice,
+                                             Int32 ProductSupplierID,
+                                             bool ProductIsArchived) {
+            int Success = 0;
+            var parameters = new DynamicParameters();
+            parameters.Add("ProductID", ProductID, DbType.Int32);
+            parameters.Add("ProductCode", ProductCode, DbType.String);
+            parameters.Add("ProductDescription", ProductDescription, DbType.String);
+            parameters.Add("ProductUnitPrice", ProductUnitPrice, DbType.Decimal);
+            parameters.Add("ProductSupplierID", ProductSupplierID, DbType.Int32);
+            parameters.Add("ProductIsArchived", ProductIsArchived, DbType.Boolean);
+            parameters.Add("@ReturnValue", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
+            using(var conn = new SqlConnection(_configuration.Value)) {
                 await conn.ExecuteAsync("spProduct_Update", parameters, commandType: CommandType.StoredProcedure);
+
+                Success = parameters.Get<int>("@ReturnValue");
             }
-            return true;
+            return Success;
         }
     }
 }
