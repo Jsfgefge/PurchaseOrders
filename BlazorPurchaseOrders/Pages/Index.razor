@@ -1,9 +1,26 @@
 ﻿@page "/"
+@using BlazorPurchaseOrders.Data
 
-<PageTitle>Index</PageTitle>
+<div class="col-sm-12">
+    <h3>Purchase Orders</h3>
+    <br />
+    <SfGrid DataSource="@poheader"
+            Toolbar="Toolbaritems">
+        <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="POHeader"></GridEvents>
+        <GridColumns>
+            <GridColumn Field="@nameof(POHeader.POHeaderOrderNumber)"
+                        HeaderText="Order No"
+                        TextAlign="@TextAlign.Left"
+                        Width="20">
+            </GridColumn>
+            <GridColumn Field="@nameof(POHeader.POHeaderOrderDate)"
+                        HeaderText="Date"
+                        Format="d"
+                        Type ="ColumnType.Date"
+                        TextAlign="@TextAlign.Center"
+                        Width="20">
+            </GridColumn>
+        </GridColumns>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+    </SfGrid>
+</div>

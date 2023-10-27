@@ -36,6 +36,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdFBhZ2UucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/PurchaseOrderPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VPcmRlclBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/SupplierPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VwcGxpZXJQYWdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
