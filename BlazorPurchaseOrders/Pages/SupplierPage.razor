@@ -37,19 +37,26 @@
         <Header>@HeaderText</Header>
     </DialogTemplates>
     <EditForm Model="@addeditSupplier" OnValidSubmit="@SupplierSave">
+        <DataAnnotationsValidator/>
         <div>
             <SfTextBox Enabled="true" Placeholder="Name" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditSupplier.SupplierName" Width="50">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditSupplier.SupplierName)" />
             <SfTextBox Enabled="true" Placeholder="Addres" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditSupplier.SupplierAddress1" Width="50">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditSupplier.SupplierAddress1)" />
             <SfTextBox Enabled="true" Placeholder="" FloatLabelType="@FloatLabelType.Never" @bind-Value="addeditSupplier.SupplierAddress2" Width="50">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditSupplier.SupplierAddress2)" />
             <SfTextBox Enabled="true" Placeholder="" FloatLabelType="@FloatLabelType.Never" @bind-Value="addeditSupplier.SupplierAddress3" Width="50">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditSupplier.SupplierAddress3)" />
             <SfTextBox Enabled="true" Placeholder="Post Code" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditSupplier.SupplierPostCode" Width="50" CssClass="ToUpperCase">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditSupplier.SupplierPostCode)" />
             <SfTextBox Enabled="true" Placeholder="Email" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditSupplier.SupplierEmail">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditSupplier.SupplierEmail)" />
         </div>
         <br /><br />
         <div class="e-foot-content">

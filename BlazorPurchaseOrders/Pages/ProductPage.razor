@@ -43,11 +43,14 @@
         <Header>@HeaderText</Header>
     </DialogTemplates>
     <EditForm Model="@addeditProduct" OnValidSubmit="@ProductSave">
+        <DataAnnotationsValidator/>
         <div>
             <SfTextBox Enabled="true" Placeholder="Product Code" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditProduct.ProductCode" Width="50">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditProduct.ProductCode)" />
             <SfTextBox Enabled="true" Placeholder="Description" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditProduct.ProductDescription" Width="50">
             </SfTextBox>
+            <ValidationMessage For="@(() => addeditProduct.ProductCode)" />
             <SfNumericTextBox Enabled="true" Placeholde
                 r="UnitPrice" FloatLabelType="@FloatLabelType.Auto" @bind-Value="addeditProduct.ProductUnitPrice" Width="50">
             </SfNumericTextBox>

@@ -5,11 +5,11 @@ namespace BlazorPurchaseOrders.Data {
     public class Product {
         [Required]
         public int ProductID { get; set; }
-        [Required]
-        [StringLength(25)]
+        [Required (ErrorMessage = "'Product Code' is required.")]
+        [StringLength(25, ErrorMessage = "'Product cOde' has a maximun length of 25 characters.")]
         public string ProductCode { get; set; }
-        [Required]
-        [StringLength(50)]
+        [Required (ErrorMessage ="'Description' is required")]
+        [StringLength(50, MinimumLength =5, ErrorMessage ="'Description' has a minimun length of 5 and a maximum of 25 characters.")]
         public string ProductDescription { get; set; }
         [Required]
         public decimal ProductUnitPrice { get; set; }
