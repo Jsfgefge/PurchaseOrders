@@ -20,7 +20,7 @@ namespace BlazorPurchaseOrders.Data{
         public async Task<bool> POHeaderInsert(POHeader poheader) {
             using (var conn = new SqlConnection(_configuration.Value)) {
                 var parameters = new DynamicParameters();
-                parameters.Add("POHeaderOrderNumber", poheader.POHeaderOrderNumber, DbType.Int32);
+                //parameters.Add("POHeaderOrderNumber", poheader.POHeaderOrderNumber, DbType.Int32);
                 parameters.Add("POHeaderOrderDAte", poheader.POHeaderOrderDate, DbType.Date);
                 parameters.Add("PoHeaderSupplierID", poheader.POHeaderID, DbType.Int32);
                 parameters.Add("POHeaderSupplierAddress1", poheader.POHeaderSupplierAddress1, DbType.String);

@@ -19,5 +19,17 @@ namespace BlazorPurchaseOrders.Data {
         [Required]
         public decimal POLineTaxRate { get; set; }
 
+        //The following are not save to database - just for the DataGrid
+        public decimal? POLineNetPrice { get; set; }
+        public decimal POLineTaxAmount { get; set; }
+        public decimal POLineGrossPrice { get; set; }
+        public string POLineProductCode { get; set; }
+
+        //POLineTaxID is not saved to the database, but is needed fro the Tax Rate drop-down list
+        //It woulkd be more usual to save the TaxID to POLine in the databasem but
+        //Tax rate percentage mught change in the future for a particular 'rate' we don't want
+        //historic tax amount to be recalculated if re-displayed in the future
+        public int POLineTaxID { get; set; }
+
     }
 }

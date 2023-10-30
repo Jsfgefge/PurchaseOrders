@@ -7,62 +7,118 @@
 
 
 <h3>@pagetitle</h3>
-    
-<EditForm Model ="@orderaddedit" OnValidSubmit="@OrderSave">
+
+<EditForm Model="@orderaddedit" OnValidSubmit="@OrderSave">
     <div class="grid-container">
         <div class="grid-child left-column">
-        <SfDropDownList DataSource="@supplier"
-                        TItem="Supplier"
-                        TValue="int"
-                        Text="SupplierID"   
-                        @bind-Value="orderaddedit.POHeaderSupplierID"
-                        FloatLabelType="@FloatLabelType.Auto"
-                        Placeholder="Select a Supplier"
-                        Enabled = "true">
-            <DropDownListFieldSettings Text="SupplierName" Value="SupplierID">
-            </DropDownListFieldSettings>
-            <DropDownListEvents TItem="Supplier" TValue="int" ValueChange="OnChangeSupplier"></DropDownListEvents>
-        </SfDropDownList>
+            <SfDropDownList DataSource="@supplier"
+                            TItem="Supplier"
+                            TValue="int"
+                            Text="SupplierID"
+            @bind-Value="orderaddedit.POHeaderSupplierID"
+                            FloatLabelType="@FloatLabelType.Auto"
+                            Placeholder="Select a Supplier"
+                            Enabled="true">
+                <DropDownListFieldSettings Text="SupplierName" Value="SupplierID">
+                </DropDownListFieldSettings>
+                <DropDownListEvents TItem="Supplier" TValue="int" ValueChange="OnChangeSupplier"></DropDownListEvents>
+            </SfDropDownList>
 
-        <SfTextBox Enabled="true" Placeholder="Address" 
-                    FloatLabelType="@FloatLabelType.Always"
-                    @bind-Value="orderaddedit.POHeaderSupplierAddress1">
-        </SfTextBox>
-        <SfTextBox Enabled="true" Placeholder="" 
-                    FloatLabelType="@FloatLabelType.Never"
-                    @bind-Value="orderaddedit.POHeaderSupplierAddress2">
-        </SfTextBox>
-        <SfTextBox Enabled="true" Placeholder=""
-                    FloatLabelType="@FloatLabelType.Never"
-                    @bind-Value="orderaddedit.POHeaderSupplierAddress3">
-        </SfTextBox>
-        <SfTextBox Enabled="true" Placeholder="Post Code"
-                    FloatLabelType="@FloatLabelType.Never"
-                    @bind-Value="orderaddedit.POHeaderSupplierPostCode">
-        </SfTextBox>
-        <SfTextBox Enabled="true" Placeholder="Email" 
-                    FloatLabelType="@FloatLabelType.Auto"
-                    @bind-Value="orderaddedit.POHeaderSupplierEmail">
-        </SfTextBox>
+            <SfTextBox Enabled="true" Placeholder="Address"
+                       FloatLabelType="@FloatLabelType.Always"
+            @bind-Value="orderaddedit.POHeaderSupplierAddress1">
+            </SfTextBox>
+            <SfTextBox Enabled="true" Placeholder=""
+                       FloatLabelType="@FloatLabelType.Never"
+            @bind-Value="orderaddedit.POHeaderSupplierAddress2">
+            </SfTextBox>
+            <SfTextBox Enabled="true" Placeholder=""
+                       FloatLabelType="@FloatLabelType.Never"
+            @bind-Value="orderaddedit.POHeaderSupplierAddress3">
+            </SfTextBox>
+            <SfTextBox Enabled="true" Placeholder="Post Code"
+                       FloatLabelType="@FloatLabelType.Never"
+            @bind-Value="orderaddedit.POHeaderSupplierPostCode">
+            </SfTextBox>
+            <SfTextBox Enabled="true" Placeholder="Email"
+                       FloatLabelType="@FloatLabelType.Auto"
+            @bind-Value="orderaddedit.POHeaderSupplierEmail">
+            </SfTextBox>
         </div>
         <div class="grid-child right-column">
-        <SfNumericTextBox Enabled="false" Placeholder="Order No."
-                    FloatLabelType="@FloatLabelType.Always"
-                    ShowSpinButton="false"
-                    @bind-Value="orderaddedit.POHeaderOrderNumber">
-        </SfNumericTextBox>
-        <SfDatePicker TValue="DateTime"
-                        Placeholder='Place Holder'
-                        FloatLabelType="@FloatLabelType.Auto"
-                        @bind-Value="orderaddedit.POHeaderOrderDate">
-        </SfDatePicker>
-        <SfTextBox Enabled="false" Placeholder="Requested By" 
-                    FloatLabelType="@FloatLabelType.Always"
-                    @bind-Value="orderaddedit.POHeaderRequestedBy">
-        </SfTextBox>
+            <SfNumericTextBox Enabled="false" Placeholder="Order No."
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+            @bind-Value="orderaddedit.POHeaderOrderNumber">
+            </SfNumericTextBox>
+            <SfDatePicker TValue="DateTime"
+                          Placeholder='Place Holder'
+                          FloatLabelType="@FloatLabelType.Auto"
+            @bind-Value="orderaddedit.POHeaderOrderDate">
+            </SfDatePicker>
+            <SfTextBox Enabled="false" Placeholder="Requested By"
+                       FloatLabelType="@FloatLabelType.Always"
+            @bind-Value="orderaddedit.POHeaderRequestedBy">
+            </SfTextBox>
         </div>
     </div>
     <br /><br />
+
+    <SfGrid @ref="OrderLinesGrid"
+            DataSource="@orderLines"
+            Toolbar="@Toolbaritems"
+            AllowResizing="true">
+        <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="POLine"></GridEvents>
+        <GridColumns>
+            <GridColumn Field="@nameof(POLine.POLineProductCode)"
+                        HeaderText="Product"
+                        TextAlign="@TextAlign.Left"
+                        Width="20">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineProductDescription)"
+                        HeaderText="Description"
+                        TextAlign="@TextAlign.Left"
+                        Width="30">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineProductQuantity)"
+                        HeaderText="Quantity"
+                        TextAlign="@TextAlign.Right"
+                        Format="n0"
+                        Width="10">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineProductUnitPrice)"
+                        HeaderText="Unit Price"
+                        TextAlign="@TextAlign.Right"
+                        Format="c2"
+                        Width="10">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineNetPrice)"
+                        HeaderText="Net Price"
+                        TextAlign="@TextAlign.Right"
+                        Format="c2"
+                        Width="10">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineTaxRate)"
+                        HeaderText="Tax Rate"
+                        TextAlign="@TextAlign.Right"
+                        Format="p2"
+                        Width="10">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineTaxAmount)"
+                        HeaderText="Tax Amount"
+                        TextAlign="@TextAlign.Right"
+                        Format="c2"
+                        Width="10">
+            </GridColumn>
+            <GridColumn Field="@nameof(POLine.POLineGrossPrice)"
+                        HeaderText="Total"
+                        TextAlign="@TextAlign.Right"
+                        Format="c2"
+                        Width="10">
+            </GridColumn>
+        </GridColumns>
+    </SfGrid>
+
     <div class="e-footer-content">
         <div class="button-container">
             <button type="submit" class="e-btn e-normal e-primary">Save</button>
@@ -71,6 +127,101 @@
     </div>
 </EditForm>
 
+<SfDialog @ref="DialogAddEditOrderLine" IsModal="true" Width="600px" ShowCloseIcon="true" Visible="false">
+    <DialogTemplates>
+        <Header>Add Order Line</Header>
+    </DialogTemplates>
+    <EditForm Model="@addeditOrderLine" OnValidSubmit="@OrderLineSave">
+        <DataAnnotationsValidator />
+        <SfDropDownList DataSource="@product"
+                        TItem="Product"
+                        TValue="int"
+                        Text="ProductID"
+        @bind-Value="addeditOrderLine.POLineProductID"
+                        FloatLabelType="@FloatLabelType.Always"
+                        Placeholder="Seelct a Product"
+                        Enabled="true">
+            <DropDownListFieldSettings Text="ProductCode" Value="ProductID"></DropDownListFieldSettings>
+            <DropDownListEvents TItem="Product" TValue="int" OnValueSelect="OnChangeProduct"></DropDownListEvents>
+        </SfDropDownList>
+        <SfTextBox Enabled="true"
+                   Placeholder="Product Description"
+                   FloatLabelType="@FloatLabelType.Always"
+        @bind-Value="addeditOrderLine.POLineProductDescription"></SfTextBox>
+
+        <div class="flex-container">
+            <SfNumericTextBox Enabled="true"
+                              Placeholder="Quantity"
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+                              Format="n0"
+                              EnableRtl="true"
+                              @bind-Value="addeditOrderLine.POLineProductQuantity"
+                              @onfocusout="POLineCalc">
+            </SfNumericTextBox>
+            <SfNumericTextBox Enabled="true"
+                              Placeholder="Unit Price"
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+                              Format="c2"
+                              EnableRtl="true"
+            @bind-Value="addeditOrderLine.POLineProductUnitPrice">
+            </SfNumericTextBox>
+            <SfNumericTextBox Enabled="false"
+                              Placeholder="Net Price"
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+                              Format="c2"
+                              EnableRtl="true"
+                              @bind-Value="addeditOrderLine.POLineNetPrice">
+            </SfNumericTextBox>
+        </div>
+        <div class="flex-container">
+            <SfDropDownList DataSource="@tax"
+                            TItem="Tax"
+                            TValue="int"
+                            Text="TaxID"
+                            @bind-Value="addeditOrderLine.POLineTaxID"
+                            FloatLabelType="@FloatLabelType.Always"
+                            Placeholder="Tax Rate"
+                            Enabled="true">
+                <DropDownListFieldSettings Text="TaxDescription" Value="TaxID"></DropDownListFieldSettings>
+                <DropDownListEvents TItem="Tax" TValue="int" OnValueSelect="OnChangeTax"></DropDownListEvents>                    
+            </SfDropDownList>
+            <SfNumericTextBox Enabled="false"
+                        Placeholder="Tax Rate %"
+                        FloatLabelType="@FloatLabelType.Always"
+                        ShowSpinButton="false"
+                        Format="p2"
+                        EnableRtl="true"
+                        @bind-Value="addeditOrderLine.POLineTaxRate">
+            </SfNumericTextBox>
+            <SfNumericTextBox Enabled="false"
+                              Placeholder="Tax Amount"
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+                              Format="c2"
+                              EnableRtl="true"
+                              @bind-Value="addeditOrderLine.POLineTaxAmount">
+            </SfNumericTextBox>
+            <SfNumericTextBox Enabled="false"
+                              Placeholder="Total Price"
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+                              Format="c2"
+                              EnableRtl="true"
+                              @bind-Value="addeditOrderLine.POLineGrossPrice">
+            </SfNumericTextBox>
+        </div>
+        <br />
+        <div class="e-footer-content">
+            <div class="button-countair">
+                <button type="button" class="e-btn e-normal" @onclick="@CloseDialog">Cancel</button>
+                <button type="submit" class="e-btn e-normal e-primary">Save</button>
+            </div>
+        </div>
+    </EditForm>
+</SfDialog>
 
 
 <style>
@@ -79,6 +230,13 @@
         max-width: 900px; /*Maximun width of th ewhole container - in this case both columns*/
         grid-template-columns: 1fr 1fr; /*Relative width of each column (1fr 1fr is equivalent to, say, 33fr 33fr)*/
         grid-gap: 75px; /*size if the gap between columns*/
+    }
+    .flex-container{
+        display:flex;
+        flex-direction:row; /*Causes tab to move along eow an then onto following row*/
+        justify-content: space-evenly; /*equal space left and right margin and between elements*/
+        margin:10px; /*this appears to be vertical margin between rows*/
+        column-gap:10px; /*Gap between columns*/
     }
 </style>
 
