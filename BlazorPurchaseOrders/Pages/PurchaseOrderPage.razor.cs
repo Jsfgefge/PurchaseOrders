@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Syncfusion.Blazor.Inputs;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Syncfusion.Blazor.Layouts;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
+using System.ComponentModel.Design;
 
 namespace BlazorPurchaseOrders.Pages {
     public partial class PurchaseOrderPage : ComponentBase {
@@ -21,6 +23,8 @@ namespace BlazorPurchaseOrders.Pages {
         [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] IProductService ProductService { get; set; }
         [Inject] ITaxService TaxService { get; set; }
+
+        public bool supplierEneabled { get; set; } = true;
 
 
         POHeader orderaddedit = new POHeader();
@@ -32,7 +36,10 @@ namespace BlazorPurchaseOrders.Pages {
         public int POHeaderID { get; set; }
         private string UserName;
 
+        WarningPage Warning;
         string pagetitle = "Add an Order";
+        string WarningHeaderMessage = "";
+        string WarningContentMessage = "";
 
         SfGrid<POLine> OrderLinesGrid;
         SfDialog DialogAddEditOrderLine;
@@ -44,7 +51,7 @@ namespace BlazorPurchaseOrders.Pages {
         //Executes on page open, sets headings and gets data in the case of edit
         protected override async Task OnInitializedAsync() {
             supplier = await SupplierService.SupplierList();
-            product = await ProductService.ProductList();
+            //product = await ProductService.ProductList();
             tax = await TaxService.TaxList();
 
             orderaddedit.POHeaderOrderDate = DateTime.Now;
@@ -74,13 +81,25 @@ namespace BlazorPurchaseOrders.Pages {
             }
         }
         protected async Task OrderSave() {
-            if (POHeaderID == 0) {
-                //Save the record
-                bool Success = await POHeaderService.POHeaderInsert(orderaddedit);
-                NavigationManager.NavigateTo("/");
+            if (orderaddedit.POHeaderSupplierID == 0) {
+                WarningHeaderMessage = "Warning!";
+                WarningContentMessage = "Please select a supplier before adding order lines";
+                Warning.OpenDialog();
             }
             else {
-                NavigationManager.NavigateTo("/");
+                if (POHeaderID == 0) {
+                    //Save the record
+                    bool Success = await POHeaderService.POHeaderInsert(orderaddedit);
+                    NavigationManager.NavigateTo("/");
+                }
+                else {
+                    NavigationManager.NavigateTo("/");
+                }
+                //addeditOrderLine = new POLine(); //Ensures a blank form when adding
+                //addeditOrderLine.POLineNetPrice = 0;
+                //addeditOrderLine.POLineTaxID = 0;
+                //addeditOrderLine.POLineProductID = 0;
+                //await this.DialogAddEditOrderLine.Show();
             }
         }
 
@@ -90,29 +109,38 @@ namespace BlazorPurchaseOrders.Pages {
         }
 
         //Populates the supplier address  when Supplier drop-down changed.
-        private void OnChangeSupplier(Syncfusion.Blazor.DropDowns.ChangeEventArgs<int, Supplier> args) {
+        private async Task OnChangeSupplier(Syncfusion.Blazor.DropDowns.ChangeEventArgs<int, Supplier> args) {
             this.orderaddedit.POHeaderSupplierAddress1 = args.ItemData.SupplierAddress1;
             this.orderaddedit.POHeaderSupplierAddress2 = args.ItemData.SupplierAddress2;
             this.orderaddedit.POHeaderSupplierAddress3 = args.ItemData.SupplierAddress3;
             this.orderaddedit.POHeaderSupplierPostCode = args.ItemData.SupplierPostCode;
             this.orderaddedit.POHeaderSupplierEmail = args.ItemData.SupplierEmail;
+
+            //Refresh product to select only those products for this supplier (and products with null suppliers)
+            product = await ProductService.ProductListBySupplier(args.ItemData.SupplierID);
         }
 
         public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args) {
             if (args.Item.Text == "Add") {
                 //Code for adding goes here
-
-                addeditOrderLine = new POLine(); //Ensures a blank form when adding
-                addeditOrderLine.POLineNetPrice = 0;
-                addeditOrderLine.POLineTaxID = 0;
-                addeditOrderLine.POLineProductID = 0;
-                await this.DialogAddEditOrderLine.Show();
-
+                //Check taht a supplier has been selected formn the dorpdown list
+                if (orderaddedit.POHeaderSupplierID == 0) {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select a supplier before adding order lines";
+                    Warning.OpenDialog();
+                }
+                else {
+                    addeditOrderLine = new POLine(); //Ensures a blank form when adding
+                    addeditOrderLine.POLineNetPrice = 0;
+                    addeditOrderLine.POLineTaxID = 0;
+                    addeditOrderLine.POLineProductID = 0;
+                    await this.DialogAddEditOrderLine.Show();
+                }
             }
-            if(args.Item.Text == "Edit"){ 
+            if (args.Item.Text == "Edit") {
                 //Code for editing goes here
             }
-            if(args.Item.Text == "Delete") {
+            if (args.Item.Text == "Delete") {
                 //Code for deleting goes here
             }
 
@@ -138,34 +166,47 @@ namespace BlazorPurchaseOrders.Pages {
         }
 
         private void OrderLineSave() {
-            if(addeditOrderLine.POLineID == 0) {
-                orderLines.Add(new POLine {
-                    POLineHeaderID = 0,
-                    POLineProductID=addeditOrderLine.POLineProductID,
-                    POLineProductCode=addeditOrderLine.POLineProductCode,
-                    POLineProductDescription = addeditOrderLine.POLineProductDescription,
-                    POLineProductQuantity = addeditOrderLine.POLineProductQuantity,
-                    POLineProductUnitPrice = addeditOrderLine.POLineProductUnitPrice,
-                    POLineNetPrice = addeditOrderLine.POLineNetPrice,
-                    POLineTaxRate=addeditOrderLine.POLineTaxRate,
-                    POLineTaxAmount=addeditOrderLine.POLineTaxAmount,
-                    POLineGrossPrice=addeditOrderLine.POLineGrossPrice
-                });
-                OrderLinesGrid.Refresh();
-                StateHasChanged();
-
-                //Reseting the POLine, addeditOrderLine = new POline(); gives error
-                addeditOrderLine.POLineProductID = 0;
-                addeditOrderLine.POLineProductCode = "";
-                addeditOrderLine.POLineProductDescription = "";
-                addeditOrderLine.POLineProductQuantity = 0;
-                addeditOrderLine.POLineProductUnitPrice = 0;
-                addeditOrderLine.POLineNetPrice = 0;
-                addeditOrderLine.POLineTaxID = 0;
-                addeditOrderLine.POLineTaxRate = 0;
-                addeditOrderLine.POLineTaxAmount = 0;
-                addeditOrderLine.POLineGrossPrice = 0;
+            if (addeditOrderLine.POLineID == 0) {
+                if (addeditOrderLine.POLineProductCode == null || addeditOrderLine.POLineProductCode == "") {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select a Product.";
+                    Warning.OpenDialog();
                 }
+                else if (addeditOrderLine.POLineTaxID == 0) {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select a Tax Rate.";
+                    Warning.OpenDialog();
+                }
+                else {
+                    orderLines.Add(new POLine {
+                        POLineHeaderID = 0,
+                        POLineProductID = addeditOrderLine.POLineProductID,
+                        POLineProductCode = addeditOrderLine.POLineProductCode,
+                        POLineProductDescription = addeditOrderLine.POLineProductDescription,
+                        POLineProductQuantity = addeditOrderLine.POLineProductQuantity,
+                        POLineProductUnitPrice = addeditOrderLine.POLineProductUnitPrice,
+                        POLineNetPrice = addeditOrderLine.POLineNetPrice,
+                        POLineTaxRate = addeditOrderLine.POLineTaxRate,
+                        POLineTaxAmount = addeditOrderLine.POLineTaxAmount,
+                        POLineGrossPrice = addeditOrderLine.POLineGrossPrice
+                    });
+                    OrderLinesGrid.Refresh();
+                    StateHasChanged();
+
+                    //Reseting the POLine, addeditOrderLine = new POline(); gives error
+                    addeditOrderLine.POLineProductID = 0;
+                    addeditOrderLine.POLineProductCode = "";
+                    addeditOrderLine.POLineProductDescription = "";
+                    addeditOrderLine.POLineProductQuantity = 0;
+                    addeditOrderLine.POLineProductUnitPrice = 0;
+                    addeditOrderLine.POLineNetPrice = 0;
+                    addeditOrderLine.POLineTaxID = 0;
+                    addeditOrderLine.POLineTaxRate = 0;
+                    addeditOrderLine.POLineTaxAmount = 0;
+                    addeditOrderLine.POLineGrossPrice = 0;
+                    supplierEneabled = false;
+                }
+            }
         }
         private async Task CloseDialog() {
             await this.DialogAddEditOrderLine.Hide();

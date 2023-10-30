@@ -77,5 +77,15 @@ namespace BlazorPurchaseOrders.Data {
             }
             return Success;
         }
+
+        public async Task<IEnumerable<Product>> ProductListBySupplier(int @SupplierID) {
+            IEnumerable<Product> products;
+            var parameters = new DynamicParameters();
+            parameters.Add("@SupplierID", SupplierID, DbType.Int32);
+            using (var conn = new SqlConnection(_configuration.Value)) {
+                products = await conn.QueryAsync<Product>("spProduct_ListBySupplier", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return products;
+        }
     }
 }

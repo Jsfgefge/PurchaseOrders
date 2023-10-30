@@ -9,6 +9,7 @@
 <h3>@pagetitle</h3>
 
 <EditForm Model="@orderaddedit" OnValidSubmit="@OrderSave">
+    <DataAnnotationsValidator/>
     <div class="grid-container">
         <div class="grid-child left-column">
             <SfDropDownList DataSource="@supplier"
@@ -18,32 +19,32 @@
             @bind-Value="orderaddedit.POHeaderSupplierID"
                             FloatLabelType="@FloatLabelType.Auto"
                             Placeholder="Select a Supplier"
-                            Enabled="true">
+                            Enabled="@supplierEneabled">
                 <DropDownListFieldSettings Text="SupplierName" Value="SupplierID">
                 </DropDownListFieldSettings>
                 <DropDownListEvents TItem="Supplier" TValue="int" ValueChange="OnChangeSupplier"></DropDownListEvents>
             </SfDropDownList>
 
-            <SfTextBox Enabled="true" Placeholder="Address"
+            <SfTextBox Enabled="@supplierEneabled" Placeholder="Address"
                        FloatLabelType="@FloatLabelType.Always"
             @bind-Value="orderaddedit.POHeaderSupplierAddress1">
-            </SfTextBox>
-            <SfTextBox Enabled="true" Placeholder=""
+            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierAddress1)" />
+            <SfTextBox Enabled="@supplierEneabled" Placeholder=""
                        FloatLabelType="@FloatLabelType.Never"
             @bind-Value="orderaddedit.POHeaderSupplierAddress2">
-            </SfTextBox>
-            <SfTextBox Enabled="true" Placeholder=""
+            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierAddress2)" />
+            <SfTextBox Enabled="@supplierEneabled" Placeholder=""
                        FloatLabelType="@FloatLabelType.Never"
             @bind-Value="orderaddedit.POHeaderSupplierAddress3">
-            </SfTextBox>
-            <SfTextBox Enabled="true" Placeholder="Post Code"
+            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierAddress3)" />
+            <SfTextBox Enabled="@supplierEneabled" Placeholder="Post Code"
                        FloatLabelType="@FloatLabelType.Never"
             @bind-Value="orderaddedit.POHeaderSupplierPostCode">
-            </SfTextBox>
+            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierPostCode)"/>
             <SfTextBox Enabled="true" Placeholder="Email"
                        FloatLabelType="@FloatLabelType.Auto"
             @bind-Value="orderaddedit.POHeaderSupplierEmail">
-            </SfTextBox>
+            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierEmail)" />
         </div>
         <div class="grid-child right-column">
             <SfNumericTextBox Enabled="false" Placeholder="Order No."
@@ -68,6 +69,44 @@
             DataSource="@orderLines"
             Toolbar="@Toolbaritems"
             AllowResizing="true">
+        <GridAggregates>
+            <GridAggregate>
+                <GridAggregateColumns>
+                    <GridAggregateColumn Field=@nameof(POLine.POLineNetPrice) Type="AggregateType.Sum" Format="C2">
+                        <FooterTemplate Context="NetContext">
+                            @{
+                                var aggregate = NetContext as AggregateTemplateContext;
+                                <div>
+                                    <p>@aggregate.Sum</p>
+                                </div>
+                            }
+                        </FooterTemplate>
+                    </GridAggregateColumn>
+
+                    <GridAggregateColumn Field=@nameof(POLine.POLineTaxAmount) Type="AggregateType.Sum" Format="C2">
+                        <FooterTemplate Context="TaxContext">
+                            @{
+                                var aggregate = TaxContext as AggregateTemplateContext;
+                                <div>
+                                    <p>@aggregate.Sum</p>
+                                </div>
+                            }
+                        </FooterTemplate>
+                    </GridAggregateColumn>
+
+                    <GridAggregateColumn Field=@nameof(POLine.POLineGrossPrice) Type="AggregateType.Sum" Format="C2">
+                        <FooterTemplate Context="GrossContext">
+                            @{
+                                var aggregate = GrossContext as AggregateTemplateContext;
+                                <div>
+                                    <p>@aggregate.Sum</p>
+                                </div>
+                            }
+                        </FooterTemplate>
+                    </GridAggregateColumn>
+                </GridAggregateColumns>
+            </GridAggregate>
+        </GridAggregates>
         <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="POLine"></GridEvents>
         <GridColumns>
             <GridColumn Field="@nameof(POLine.POLineProductCode)"
@@ -147,7 +186,8 @@
         <SfTextBox Enabled="true"
                    Placeholder="Product Description"
                    FloatLabelType="@FloatLabelType.Always"
-        @bind-Value="addeditOrderLine.POLineProductDescription"></SfTextBox>
+        @bind-Value="addeditOrderLine.POLineProductDescription">
+        </SfTextBox><div class="flex-container"><ValidationMessage For="@(()=>addeditOrderLine.POLineProductDescription)"/></div>
 
         <div class="flex-container">
             <SfNumericTextBox Enabled="true"
@@ -157,7 +197,7 @@
                               Format="n0"
                               EnableRtl="true"
                               @bind-Value="addeditOrderLine.POLineProductQuantity"
-                              @onfocusout="POLineCalc">
+                              @onfocusout="@POLineCalc">
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="true"
                               Placeholder="Unit Price"
@@ -165,7 +205,8 @@
                               ShowSpinButton="false"
                               Format="c2"
                               EnableRtl="true"
-            @bind-Value="addeditOrderLine.POLineProductUnitPrice">
+                              @bind-Value="addeditOrderLine.POLineProductUnitPrice"
+                              @onfocusout='@POLineCalc'>
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="false"
                               Placeholder="Net Price"
@@ -223,6 +264,7 @@
     </EditForm>
 </SfDialog>
 
+<WarningPage @ref="Warning" WarningHeaderMessage="@WarningHeaderMessage" WarningContentMessage="@WarningContentMessage"/>
 
 <style>
     .grid-container {

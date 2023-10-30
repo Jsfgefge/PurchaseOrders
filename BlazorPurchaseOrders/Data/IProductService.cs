@@ -18,5 +18,6 @@ namespace BlazorPurchaseOrders.Data {
                                              decimal ProductUnitPrice,
                                              Int32 ProductSupplierID,
                                              bool ProductIsArchived);
+        Task<IEnumerable<Product>> ProductListBySupplier(int SupplierID);
     }
 }
