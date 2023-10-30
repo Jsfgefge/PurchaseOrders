@@ -16,6 +16,8 @@ namespace BlazorPurchaseOrders.Pages {
         IEnumerable<POHeader> poheader;
         private List<ItemModel> Toolbaritems = new List<ItemModel>();
 
+        private int POHeaderID;
+
         protected override async Task OnInitializedAsync() {
             poheader = await POHeaderService.POHeaderList();
 
@@ -27,6 +29,9 @@ namespace BlazorPurchaseOrders.Pages {
         public void ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args) {
             if (args.Item.Text == "Add") {
                 //Code for adding goes here
+                POHeaderID = 0;
+                NavigationManager.NavigateTo($"/purchaseorder/{POHeaderID}");
+
             }
             if (args.Item.Text == "Edit") {
                 //Code for editing

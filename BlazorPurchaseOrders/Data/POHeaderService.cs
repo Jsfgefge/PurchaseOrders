@@ -29,7 +29,7 @@ namespace BlazorPurchaseOrders.Data{
                 parameters.Add("POHeaderSupplierPostCode", poheader.POHeaderSupplierPostCode, DbType.String);
                 parameters.Add("POHeaderSupplierEmail", poheader.POHeaderSupplierEmail, DbType.String);
                 parameters.Add("POHeaderRequestedBy", poheader.POHeaderRequestedBy, DbType.String);
-                parameters.Add("POHeaderIsArquived", poheader.POHeaderIsArchived, DbType.Boolean);
+                parameters.Add("POHeaderIsArchived", poheader.POHeaderIsArchived, DbType.Boolean);
 
                 await conn.ExecuteAsync("spPOHeader_Insert", parameters, commandType: CommandType.StoredProcedure);
 

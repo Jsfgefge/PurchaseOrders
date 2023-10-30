@@ -1,6 +1,86 @@
 ﻿@page "/purchaseorder/{POHeaderID:int}"
 @using BlazorPurchaseOrders.Data
-<h3>PurchaseOrderPage</h3>
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using System
+@using System.Collections.Generic
+
+
+<h3>@pagetitle</h3>
+    
+<EditForm Model ="@orderaddedit" OnValidSubmit="@OrderSave">
+    <div class="grid-container">
+        <div class="grid-child left-column">
+        <SfDropDownList DataSource="@supplier"
+                        TItem="Supplier"
+                        TValue="int"
+                        Text="SupplierID"   
+                        @bind-Value="orderaddedit.POHeaderSupplierID"
+                        FloatLabelType="@FloatLabelType.Auto"
+                        Placeholder="Select a Supplier"
+                        Enabled = "true">
+            <DropDownListFieldSettings Text="SupplierName" Value="SupplierID">
+            </DropDownListFieldSettings>
+            <DropDownListEvents TItem="Supplier" TValue="int" ValueChange="OnChangeSupplier"></DropDownListEvents>
+        </SfDropDownList>
+
+        <SfTextBox Enabled="true" Placeholder="Address" 
+                    FloatLabelType="@FloatLabelType.Always"
+                    @bind-Value="orderaddedit.POHeaderSupplierAddress1">
+        </SfTextBox>
+        <SfTextBox Enabled="true" Placeholder="" 
+                    FloatLabelType="@FloatLabelType.Never"
+                    @bind-Value="orderaddedit.POHeaderSupplierAddress2">
+        </SfTextBox>
+        <SfTextBox Enabled="true" Placeholder=""
+                    FloatLabelType="@FloatLabelType.Never"
+                    @bind-Value="orderaddedit.POHeaderSupplierAddress3">
+        </SfTextBox>
+        <SfTextBox Enabled="true" Placeholder="Post Code"
+                    FloatLabelType="@FloatLabelType.Never"
+                    @bind-Value="orderaddedit.POHeaderSupplierPostCode">
+        </SfTextBox>
+        <SfTextBox Enabled="true" Placeholder="Email" 
+                    FloatLabelType="@FloatLabelType.Auto"
+                    @bind-Value="orderaddedit.POHeaderSupplierEmail">
+        </SfTextBox>
+        </div>
+        <div class="grid-child right-column">
+        <SfNumericTextBox Enabled="false" Placeholder="Order No."
+                    FloatLabelType="@FloatLabelType.Always"
+                    ShowSpinButton="false"
+                    @bind-Value="orderaddedit.POHeaderOrderNumber">
+        </SfNumericTextBox>
+        <SfDatePicker TValue="DateTime"
+                        Placeholder='Place Holder'
+                        FloatLabelType="@FloatLabelType.Auto"
+                        @bind-Value="orderaddedit.POHeaderOrderDate">
+        </SfDatePicker>
+        <SfTextBox Enabled="false" Placeholder="Requested By" 
+                    FloatLabelType="@FloatLabelType.Always"
+                    @bind-Value="orderaddedit.POHeaderRequestedBy">
+        </SfTextBox>
+        </div>
+    </div>
+    <br /><br />
+    <div class="e-footer-content">
+        <div class="button-container">
+            <button type="submit" class="e-btn e-normal e-primary">Save</button>
+            <button type="button" class="e-btn e-normal" @onclick="@Cancel">Cancel</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+<style>
+    .grid-container {
+        display: grid;
+        max-width: 900px; /*Maximun width of th ewhole container - in this case both columns*/
+        grid-template-columns: 1fr 1fr; /*Relative width of each column (1fr 1fr is equivalent to, say, 33fr 33fr)*/
+        grid-gap: 75px; /*size if the gap between columns*/
+    }
+</style>
 
 @code {
 
