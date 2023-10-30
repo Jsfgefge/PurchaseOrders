@@ -23,6 +23,7 @@ namespace BlazorPurchaseOrders.Pages {
         [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] IProductService ProductService { get; set; }
         [Inject] ITaxService TaxService { get; set; }
+        [Inject] IPOLineService POLineService { get; set; }
 
         public bool supplierEneabled { get; set; } = true;
 
@@ -89,7 +90,22 @@ namespace BlazorPurchaseOrders.Pages {
             else {
                 if (POHeaderID == 0) {
                     //Save the record
-                    bool Success = await POHeaderService.POHeaderInsert(orderaddedit);
+                    //bool Success = await POHeaderService.POHeaderInsert(orderaddedit);
+
+                    int HeaderID = await POHeaderService.POHeaderInsert(
+                        orderaddedit.POHeaderOrderDate,
+                        orderaddedit.POHeaderSupplierID,
+                        orderaddedit.POHeaderSupplierAddress1,
+                        orderaddedit.POHeaderSupplierAddress2,
+                        orderaddedit.POHeaderSupplierAddress3,
+                        orderaddedit.POHeaderSupplierPostCode,
+                        orderaddedit.POHeaderSupplierEmail,
+                        orderaddedit.POHeaderRequestedBy
+                        );
+                    foreach(var individualPOLine in orderLines) {
+                        individualPOLine.POLineHeaderID = HeaderID;
+                        bool Success = await POLineService.POLineInsert(individualPOLine);
+                    }
                     NavigationManager.NavigateTo("/");
                 }
                 else {

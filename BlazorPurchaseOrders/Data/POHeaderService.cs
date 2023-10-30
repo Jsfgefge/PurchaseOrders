@@ -17,24 +17,33 @@ namespace BlazorPurchaseOrders.Data{
         }
         //Add (create) a POHeader table row (SQL Insert)
         //This Only works if you're alreader created the store procedure.
-        public async Task<bool> POHeaderInsert(POHeader poheader) {
+        public async Task<int> POHeaderInsert(DateTime POHeaderOrderDate,
+                                              int POHeaderSupplierID,
+                                              string POHeaderSupplierAddress1,
+                                              string POHeaderSupplierAddress2,
+                                              string POHeaderSupplierAddress3,
+                                              string POHeaderSupplierPostCode,
+                                              string POHeaderSupplierEmail,
+                                              string POHeaderRequestedBy) {
+            int newHeaderID = 0;
             using (var conn = new SqlConnection(_configuration.Value)) {
                 var parameters = new DynamicParameters();
-                //parameters.Add("POHeaderOrderNumber", poheader.POHeaderOrderNumber, DbType.Int32);
-                parameters.Add("POHeaderOrderDAte", poheader.POHeaderOrderDate, DbType.Date);
-                parameters.Add("PoHeaderSupplierID", poheader.POHeaderID, DbType.Int32);
-                parameters.Add("POHeaderSupplierAddress1", poheader.POHeaderSupplierAddress1, DbType.String);
-                parameters.Add("POHeaderSupplierAddress2", poheader.POHeaderSupplierAddress2, DbType.String);
-                parameters.Add("POHeaderSupplierAddress3", poheader.POHeaderSupplierAddress3, DbType.String);
-                parameters.Add("POHeaderSupplierPostCode", poheader.POHeaderSupplierPostCode, DbType.String);
-                parameters.Add("POHeaderSupplierEmail", poheader.POHeaderSupplierEmail, DbType.String);
-                parameters.Add("POHeaderRequestedBy", poheader.POHeaderRequestedBy, DbType.String);
-                parameters.Add("POHeaderIsArchived", poheader.POHeaderIsArchived, DbType.Boolean);
+                parameters.Add("POHeaderOrderDate", POHeaderOrderDate, DbType.Date);
+                parameters.Add("POHeaderSupplierID", POHeaderSupplierID, DbType.Int32);
+                parameters.Add("POHeaderSupplierAddress1", POHeaderSupplierAddress1, DbType.String);
+                parameters.Add("POHeaderSupplierAddress2", POHeaderSupplierAddress2, DbType.String);
+                parameters.Add("POHeaderSupplierAddress3", POHeaderSupplierAddress3, DbType.String);
+                parameters.Add("POHeaderSupplierPostCode", POHeaderSupplierPostCode, DbType.String);
+                parameters.Add("POHeaderSupplierEmail", POHeaderSupplierEmail, DbType.String);
+                parameters.Add("POHeaderRequestedBy", POHeaderRequestedBy, DbType.String);
+                parameters.Add("@Output", DbType.Int32, direction:ParameterDirection.Output);
 
+                //Stored procedure method
                 await conn.ExecuteAsync("spPOHeader_Insert", parameters, commandType: CommandType.StoredProcedure);
 
-            }
-            return true;
+                newHeaderID = parameters.Get<int>("@Output");
+            };
+            return newHeaderID;
         }
         //Get a list of poheader rows (SQL Select)
         //This Only works if you're already created the stored procedure
