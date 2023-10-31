@@ -37,13 +37,13 @@
             </SfNumericTextBox>
         </div>
         <br /><br />
-        <div class="e-foot-content">
+        <div class="e-footer-content">
             <div class="button-container">
+                <button type="submit" class="e-btn e-normal e-primary">
+                    Save
+                </button>
                 <button type="button" class="e-btn e-normal" @onclick="@CloseDialog">
                     Cancel
-                </button>
-                <button type="submit" class="e-btn e-normal">
-                    Save
                 </button>
             </div>
         </div>
@@ -63,7 +63,7 @@
     </DialogTemplates>
     <DialogButtons>
         <DialogButton Content="Delete" IsPrimary="true" OnClick="@ConfirmDeleteYes"></DialogButton>
-        <DialogButton Content="Candel" IsPrimary="false" OnClick="@ConfirmDeleteNo"></DialogButton>
+        <DialogButton Content="Cancel" IsPrimary="false" OnClick="@ConfirmDeleteNo"></DialogButton>
     </DialogButtons>
 </SfDialog>
 

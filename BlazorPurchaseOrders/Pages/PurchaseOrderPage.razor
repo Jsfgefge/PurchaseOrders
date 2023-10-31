@@ -50,16 +50,17 @@
             <SfNumericTextBox Enabled="false" Placeholder="Order No."
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
-            @bind-Value="orderaddedit.POHeaderOrderNumber">
+                              CssClass="e-style"
+                              @bind-Value="orderaddedit.POHeaderOrderNumber">
             </SfNumericTextBox>
             <SfDatePicker TValue="DateTime"
                           Placeholder='Place Holder'
                           FloatLabelType="@FloatLabelType.Auto"
-            @bind-Value="orderaddedit.POHeaderOrderDate">
+                          @bind-Value="orderaddedit.POHeaderOrderDate">
             </SfDatePicker>
             <SfTextBox Enabled="false" Placeholder="Requested By"
                        FloatLabelType="@FloatLabelType.Always"
-            @bind-Value="orderaddedit.POHeaderRequestedBy">
+                       @bind-Value="orderaddedit.POHeaderRequestedBy">
             </SfTextBox>
         </div>
     </div>
@@ -158,7 +159,7 @@
         </GridColumns>
     </SfGrid>
 
-    <div class="e-footer-content">
+    <div class="e-footer-content" style="text-align:right; width:100%;">
         <div class="button-container">
             <button type="submit" class="e-btn e-normal e-primary">Save</button>
             <button type="button" class="e-btn e-normal" @onclick="@Cancel">Cancel</button>
@@ -178,8 +179,29 @@
                         Text="ProductID"
                         @bind-Value="addeditOrderLine.POLineProductID"
                         FloatLabelType="@FloatLabelType.Always"
-                        Placeholder="Seelct a Product"
+                        Placeholder="Select a Product"
                         Enabled="true">
+            <DropDownListTemplates TItem="Product">
+                <HeaderTemplate>
+                    <span class='head'>
+                        <span class="productcode">Code
+                            <span class="description">
+                                Description
+                            </span>
+                        </span>
+                    </span>
+                </HeaderTemplate>
+                <ItemTemplate Context="contextName">
+                    <span class="item">
+                        <span class="productcode">
+                            @((contextName as Product).ProductCode)
+                        </span>
+                        <span class="description">
+                            @((contextName as Product).ProductDescription)
+                        </span>
+                    </span>
+                </ItemTemplate>
+            </DropDownListTemplates>
             <DropDownListFieldSettings Text="ProductCode" Value="ProductID"></DropDownListFieldSettings>
             <DropDownListEvents TItem="Product" TValue="int" OnValueSelect="OnChangeProduct"></DropDownListEvents>
         </SfDropDownList>
@@ -195,7 +217,9 @@
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
                               Format="n0"
-                              EnableRtl="true"
+                              Decimals="0"
+                              ValidateDecimalOnType=true
+                              CssClass="e-style"
                               @bind-Value="addeditOrderLine.POLineProductQuantity"
                               @onfocusout="@POLineCalc">
             </SfNumericTextBox>
@@ -204,7 +228,9 @@
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
                               Format="c2"
-                              EnableRtl="true"
+                              Decimals="2"
+                              ValidateDecimalOnType="true"
+                              CssClass="e-style"
                               @bind-Value="addeditOrderLine.POLineProductUnitPrice"
                               @onfocusout='@POLineCalc'>
             </SfNumericTextBox>
@@ -213,7 +239,7 @@
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
                               Format="c2"
-                              EnableRtl="true"
+                              CssClass="e-style"
                               @bind-Value="addeditOrderLine.POLineNetPrice">
             </SfNumericTextBox>
         </div>
@@ -234,7 +260,7 @@
                         FloatLabelType="@FloatLabelType.Always"
                         ShowSpinButton="false"
                         Format="p2"
-                        EnableRtl="true"
+                              CssClass="e-style"
                         @bind-Value="addeditOrderLine.POLineTaxRate">
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="false"
@@ -242,7 +268,7 @@
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
                               Format="c2"
-                              EnableRtl="true"
+                              CssClass="e-style"
                               @bind-Value="addeditOrderLine.POLineTaxAmount">
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="false"
@@ -250,15 +276,15 @@
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
                               Format="c2"
-                              EnableRtl="true"
+                              CssClass="e-style"
                               @bind-Value="addeditOrderLine.POLineGrossPrice">
             </SfNumericTextBox>
         </div>
         <br />
         <div class="e-footer-content">
             <div class="button-countair">
-                <button type="button" class="e-btn e-normal" @onclick="@CloseDialog">Cancel</button>
                 <button type="submit" class="e-btn e-normal e-primary">Save</button>
+                <button type="button" class="e-btn e-normal" @onclick="@CloseDialog">Cancel</button>
             </div>
         </div>
     </EditForm>
@@ -294,6 +320,10 @@
         justify-content: space-evenly; /*equal space left and right margin and between elements*/
         margin:10px; /*this appears to be vertical margin between rows*/
         column-gap:10px; /*Gap between columns*/
+    }
+    .e-numeric.e-style .e-control.e-numerictextbox {
+        text-align: right;
+        padding: 0px 5px 0px 0px;
     }
 </style>
 
