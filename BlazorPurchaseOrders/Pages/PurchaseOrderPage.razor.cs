@@ -41,9 +41,13 @@ namespace BlazorPurchaseOrders.Pages {
         string pagetitle = "Add an Order";
         string WarningHeaderMessage = "";
         string WarningContentMessage = "";
+        string dialogHeaderText = "";
+        int selectedPOLineID = -999;
+        int currentNewRow = 0;
 
         SfGrid<POLine> OrderLinesGrid;
         SfDialog DialogAddEditOrderLine;
+        SfDialog DialogDeleteOrderLine;
 
         public POLine addeditOrderLine = new POLine();
         public List<POLine> orderLines = new List<POLine>();
@@ -102,7 +106,7 @@ namespace BlazorPurchaseOrders.Pages {
                         orderaddedit.POHeaderSupplierEmail,
                         orderaddedit.POHeaderRequestedBy
                         );
-                    foreach(var individualPOLine in orderLines) {
+                    foreach (var individualPOLine in orderLines) {
                         individualPOLine.POLineHeaderID = HeaderID;
                         bool Success = await POLineService.POLineInsert(individualPOLine);
                     }
@@ -148,18 +152,44 @@ namespace BlazorPurchaseOrders.Pages {
                 else {
                     addeditOrderLine = new POLine(); //Ensures a blank form when adding
                     addeditOrderLine.POLineNetPrice = 0;
-                    addeditOrderLine.POLineTaxID = 0;
+                    addeditOrderLine.POLineTaxID = 1;
+                    addeditOrderLine.POLineTaxRate = 0;
                     addeditOrderLine.POLineProductID = 0;
+                    dialogHeaderText = "Add an Order Line";
                     await this.DialogAddEditOrderLine.Show();
                 }
             }
             if (args.Item.Text == "Edit") {
                 //Code for editing goes here
+                if (selectedPOLineID == -999) {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select an Order Line from the grid.";
+                    Warning.OpenDialog();
+                }
+                else {
+                    //Populate addeditOrderLine (temporary dat set used for the editing process)
+                    addeditOrderLine = orderLines.Where(x => x.POLineID == selectedPOLineID).FirstOrDefault();
+                    StateHasChanged();
+                    dialogHeaderText = "Edit an Order Line";
+                    await this.DialogAddEditOrderLine.Show();
+                }
             }
             if (args.Item.Text == "Delete") {
                 //Code for deleting goes here
+                if (selectedPOLineID == -999) {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select an Order Line from the grid";
+                    Warning.OpenDialog();
+                }
+                else{
+                    await this.DialogDeleteOrderLine.Show();
+                }
             }
 
+        }
+
+        public void RowSelectHandler(RowSelectEventArgs<POLine> args) {
+            selectedPOLineID = args.Data.POLineID;
         }
 
         private void OnChangeProduct(Syncfusion.Blazor.DropDowns.SelectEventArgs<Product> args) {
@@ -181,7 +211,7 @@ namespace BlazorPurchaseOrders.Pages {
             addeditOrderLine.POLineGrossPrice = addeditOrderLine.POLineNetPrice.Value * (1 + addeditOrderLine.POLineTaxRate);
         }
 
-        private void OrderLineSave() {
+        private async Task OrderLineSave() {
             if (addeditOrderLine.POLineID == 0) {
                 if (addeditOrderLine.POLineProductCode == null || addeditOrderLine.POLineProductCode == "") {
                     WarningHeaderMessage = "Warning!";
@@ -194,7 +224,9 @@ namespace BlazorPurchaseOrders.Pages {
                     Warning.OpenDialog();
                 }
                 else {
+                    currentNewRow = currentNewRow + 1;
                     orderLines.Add(new POLine {
+                        POLineID = currentNewRow,
                         POLineHeaderID = 0,
                         POLineProductID = addeditOrderLine.POLineProductID,
                         POLineProductCode = addeditOrderLine.POLineProductCode,
@@ -204,7 +236,8 @@ namespace BlazorPurchaseOrders.Pages {
                         POLineNetPrice = addeditOrderLine.POLineNetPrice,
                         POLineTaxRate = addeditOrderLine.POLineTaxRate,
                         POLineTaxAmount = addeditOrderLine.POLineTaxAmount,
-                        POLineGrossPrice = addeditOrderLine.POLineGrossPrice
+                        POLineGrossPrice = addeditOrderLine.POLineGrossPrice,
+                        POLineTaxID=addeditOrderLine.POLineTaxID
                     });
                     OrderLinesGrid.Refresh();
                     StateHasChanged();
@@ -216,13 +249,47 @@ namespace BlazorPurchaseOrders.Pages {
                     addeditOrderLine.POLineProductQuantity = 0;
                     addeditOrderLine.POLineProductUnitPrice = 0;
                     addeditOrderLine.POLineNetPrice = 0;
-                    addeditOrderLine.POLineTaxID = 0;
-                    addeditOrderLine.POLineTaxRate = 0;
+                    //addeditOrderLine.POLineTaxID = 0;
+                    //addeditOrderLine.POLineTaxRate = 0;
                     addeditOrderLine.POLineTaxAmount = 0;
                     addeditOrderLine.POLineGrossPrice = 0;
                     supplierEneabled = false;
                 }
             }
+            else {
+                //An order is being edited
+                //Chech taht a product has been selected from the drop-down list
+                if (addeditOrderLine.POLineProductCode == null || addeditOrderLine.POLineProductCode == "") {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select a Product.";
+                    Warning.OpenDialog();
+                }
+                else if (addeditOrderLine.POLineTaxID == 0) {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select a Tax Rate.";
+                    Warning.OpenDialog();
+                }
+                else {
+                    OrderLinesGrid.Refresh();
+                    StateHasChanged();
+                    await CloseDialog();
+                    selectedPOLineID = -999;
+                }
+            }
+        }
+        public async void ConfirmDeleteNo() {
+            await this.DialogDeleteOrderLine.Hide();
+            selectedPOLineID = -999;
+        }
+        private void OrderLineDelete() {
+            var itemToRemove = orderLines.Single(x => x.POLineID == selectedPOLineID);
+            orderLines.Remove(itemToRemove);
+            OrderLinesGrid.Refresh();
+        }
+        public async void ConfirmDeleteYes() {
+            OrderLineDelete();
+            await this.DialogDeleteOrderLine.Hide();
+            selectedPOLineID = -999;
         }
         private async Task CloseDialog() {
             await this.DialogAddEditOrderLine.Hide();
