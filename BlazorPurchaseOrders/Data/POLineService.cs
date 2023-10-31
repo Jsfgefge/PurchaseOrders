@@ -24,6 +24,7 @@ namespace BlazorPurchaseOrders.Data {
                 parameters.Add("POLineProductQuantity", poline.POLineProductQuantity, DbType.Decimal);
                 parameters.Add("POLineProductUnitPrice", poline.POLineProductUnitPrice, DbType.Decimal);
                 parameters.Add("POLineTaxRate", poline.POLineTaxRate, DbType.Decimal);
+                parameters.Add("POLineTaxID", poline.POLineTaxID, DbType.Int32);
 
                 // Stored procedure method
                 await conn.ExecuteAsync("spPOLine_Insert", parameters, commandType: CommandType.StoredProcedure);
@@ -64,6 +65,7 @@ namespace BlazorPurchaseOrders.Data {
                 parameters.Add("POLineProductQuantity", poline.POLineProductQuantity, DbType.Decimal);
                 parameters.Add("POLineProductUnitPrice", poline.POLineProductUnitPrice, DbType.Decimal);
                 parameters.Add("POLineTaxRate", poline.POLineTaxRate, DbType.Decimal);
+                parameters.Add("POLineTaxID", poline.POLineTaxID, DbType.Int32);
 
                 await conn.ExecuteAsync("spPOLine_Update", parameters, commandType: CommandType.StoredProcedure);
             }
@@ -78,6 +80,14 @@ namespace BlazorPurchaseOrders.Data {
                 polines = await conn.QueryAsync<POLine>("spPOLine_GetByPOHeader", parameters, commandType: CommandType.StoredProcedure);
             }
             return polines;
+        }
+        public async Task<bool> POLineDeleteOne(int @POLineID) {
+            var parameters = new DynamicParameters();
+            parameters.Add("@POLineID", POLineID, DbType.Int32);
+            using(var conn = new SqlConnection(_configuration.Value)) {
+                await conn.ExecuteAsync("spPOLine_DeleteOne", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return true;
         }
     }
 }

@@ -69,15 +69,15 @@ namespace BlazorPurchaseOrders.Data{
                 var parameters = new DynamicParameters();
                 parameters.Add("POHeaderID", poheader.POHeaderID, DbType.Int32);
                 parameters.Add("POHeaderOrderNumber", poheader.POHeaderOrderNumber, DbType.Int32);
-                parameters.Add("POHeaderOrderDate", poheader.POHeaderOrderDate, DbType.Int32);
+                parameters.Add("POHeaderOrderDate", poheader.POHeaderOrderDate, DbType.Date);
                 parameters.Add("POHeaderSupplierID", poheader.POHeaderSupplierID, DbType.Int32);
-                parameters.Add("POHeaderSupplierAddress1", poheader.POHeaderSupplierAddress1, DbType.Int32);
-                parameters.Add("POHeaderSupplierAddress2", poheader.POHeaderSupplierAddress2, DbType.Int32);
-                parameters.Add("POHeaderSupplierAddress3", poheader.POHeaderSupplierAddress3, DbType.Int32);
+                parameters.Add("POHeaderSupplierAddress1", poheader.POHeaderSupplierAddress1, DbType.String);
+                parameters.Add("POHeaderSupplierAddress2", poheader.POHeaderSupplierAddress2, DbType.String);
+                parameters.Add("POHeaderSupplierAddress3", poheader.POHeaderSupplierAddress3, DbType.String);
                 parameters.Add("POHeaderSupplierPostCode", poheader.POHeaderSupplierPostCode, DbType.String);
                 parameters.Add("POHeaderSupplierEmail", poheader.POHeaderSupplierEmail, DbType.String);
                 parameters.Add("POHeaderRequestedBy", poheader.POHeaderRequestedBy, DbType.String);
-                parameters.Add("POHeaderIsArquived", poheader.POHeaderIsArchived, DbType.Boolean);
+                parameters.Add("POHeaderIsArchived", poheader.POHeaderIsArchived, DbType.Boolean);
 
                 await conn.ExecuteAsync("spPOHeader_Update", parameters, commandType: CommandType.StoredProcedure);
             }

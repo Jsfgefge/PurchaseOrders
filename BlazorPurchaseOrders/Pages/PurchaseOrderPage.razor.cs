@@ -54,6 +54,8 @@ namespace BlazorPurchaseOrders.Pages {
         public List<POLine> orderLines = new List<POLine>();
         private List<ItemModel> Toolbaritems = new List<ItemModel>();
 
+        private List<int> OrderLinesToBeDeleted = new List<int>();
+
         //Executes on page open, sets headings and gets data in the case of edit
         protected override async Task OnInitializedAsync() {
             supplier = await SupplierService.SupplierList();
@@ -118,6 +120,22 @@ namespace BlazorPurchaseOrders.Pages {
                     NavigationManager.NavigateTo("/");
                 }
                 else {
+                    bool Success = await POHeaderService.POHeaderUpdate(orderaddedit);
+                    foreach(var individualPOLine in orderLines) {
+                        //If POLineHeaderID is positive it means it has been edited during the edit of this order
+                        if (individualPOLine.POLineID > 0) {
+                            Success = await POLineService.POLineUpdate(individualPOLine);
+                        }
+                        else {
+                            individualPOLine.POLineHeaderID = POHeaderID;
+                            Success = await POLineService.POLineInsert(individualPOLine);
+                            }
+                    }
+                    foreach(var individualPOLine in OrderLinesToBeDeleted) {
+                        Success = await POLineService.POLineDeleteOne(individualPOLine);
+                    }
+                    //Clear the list of POLines to be deleted
+                    OrderLinesToBeDeleted.Clear();
                     NavigationManager.NavigateTo("/");
                 }
                 //addeditOrderLine = new POLine(); //Ensures a blank form when adding
@@ -142,10 +160,10 @@ namespace BlazorPurchaseOrders.Pages {
             this.orderaddedit.POHeaderSupplierEmail = args.ItemData.SupplierEmail;
 
             //Refresh product to select only those products for this supplier (and products with null suppliers)
-            product = await ProductService.ProductListBySupplier(args.ItemData.SupplierID);
         }
 
         public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args) {
+            product = await ProductService.ProductListBySupplier(orderaddedit.POHeaderSupplierID);
             if (args.Item.Text == "Add") {
                 //Code for adding goes here
                 //Check taht a supplier has been selected formn the dorpdown list
@@ -229,7 +247,7 @@ namespace BlazorPurchaseOrders.Pages {
                     Warning.OpenDialog();
                 }
                 else {
-                    currentNewRow = currentNewRow + 1;
+                    currentNewRow = currentNewRow - 1;
                     orderLines.Add(new POLine {
                         POLineID = currentNewRow,
                         POLineHeaderID = 0,
@@ -242,7 +260,7 @@ namespace BlazorPurchaseOrders.Pages {
                         POLineTaxRate = addeditOrderLine.POLineTaxRate,
                         POLineTaxAmount = addeditOrderLine.POLineTaxAmount,
                         POLineGrossPrice = addeditOrderLine.POLineGrossPrice,
-                        POLineTaxID=addeditOrderLine.POLineTaxID
+                        POLineTaxID=addeditOrderLine.POLineTaxID,
                     });
                     OrderLinesGrid.Refresh();
                     StateHasChanged();
@@ -287,6 +305,11 @@ namespace BlazorPurchaseOrders.Pages {
             selectedPOLineID = -999;
         }
         private void OrderLineDelete() {
+            if (selectedPOLineID > 0) {
+                //Order line has already been saved to the database, an was present at start of this order edit
+                //Add to list of order to be deleted when order is saved
+                OrderLinesToBeDeleted.Add(selectedPOLineID);
+            }
             var itemToRemove = orderLines.Single(x => x.POLineID == selectedPOLineID);
             orderLines.Remove(itemToRemove);
             OrderLinesGrid.Refresh();
