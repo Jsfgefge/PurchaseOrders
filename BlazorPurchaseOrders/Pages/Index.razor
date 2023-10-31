@@ -6,7 +6,7 @@
     <br />
     <SfGrid DataSource="@poheader"
             Toolbar="Toolbaritems">
-        <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="POHeader"></GridEvents>
+        <GridEvents OnToolbarClick="ToolbarClickHandler" RowSelected="RowSelectHandler" TValue="POHeader"></GridEvents>
         <GridColumns>
             <GridColumn Field="@nameof(POHeader.POHeaderOrderNumber)"
                         HeaderText="Order No"
@@ -40,3 +40,4 @@
 
     </SfGrid>
 </div>
+<WarningPage @ref="Warning" WarningHeaderMessage="@WarningHeaderMessage" WarningContentMessage="@WarningContentMessage"/>

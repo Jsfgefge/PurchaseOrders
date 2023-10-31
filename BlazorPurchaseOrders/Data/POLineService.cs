@@ -69,5 +69,15 @@ namespace BlazorPurchaseOrders.Data {
             }
             return true;
         }
+
+        public async Task<IEnumerable<POLine>> POLine_GetByPOHeader(int @POHeaderID) {
+            IEnumerable<POLine> polines;
+            var parameters = new DynamicParameters();
+            parameters.Add("@POHeaderID", POHeaderID, DbType.Int32);
+            using(var conn = new SqlConnection(_configuration.Value)) {
+                polines = await conn.QueryAsync<POLine>("spPOLine_GetByPOHeader", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return polines;
+        }
     }
 }

@@ -32,6 +32,7 @@ namespace BlazorPurchaseOrders.Pages {
         IEnumerable<Supplier> supplier;
         IEnumerable<Product> product;
         IEnumerable<Tax> tax;
+        IEnumerable<POLine> orderLinesByPOHeader;
 
         [Parameter]
         public int POHeaderID { get; set; }
@@ -83,6 +84,10 @@ namespace BlazorPurchaseOrders.Pages {
             }
             else {
                 pagetitle = "Edit an Order";
+                orderaddedit = await POHeaderService.POHeader_GetOne(POHeaderID);
+                orderLinesByPOHeader = await POLineService.POLine_GetByPOHeader(POHeaderID);
+                orderLines = orderLinesByPOHeader.ToList();
+                supplierEneabled = false;
             }
         }
         protected async Task OrderSave() {
