@@ -11,14 +11,30 @@
             <GridColumn Field="@nameof(POHeader.POHeaderOrderNumber)"
                         HeaderText="Order No"
                         TextAlign="@TextAlign.Left"
-                        Width="20">
+                        Width="10">
             </GridColumn>
             <GridColumn Field="@nameof(POHeader.POHeaderOrderDate)"
                         HeaderText="Date"
                         Format="d"
-                        Type ="ColumnType.Date"
+                        Type="ColumnType.Date"
                         TextAlign="@TextAlign.Center"
+                        Width="15">
+            </GridColumn>
+            <GridColumn Field="@nameof(POHeader.SupplierName)"
+                        HeaderText="Supplier"
+                        TextAlign="@TextAlign.Left"
+                        Width="40">
+            </GridColumn>
+            <GridColumn Field="@nameof(POHeader.TotalOrderValue)"
+                        HeaderText="Total"
+                        Format="c2"
+                        TextAlign="@TextAlign.Right"
                         Width="20">
+            </GridColumn>
+            <GridColumn Field="@nameof(POHeader.POHeaderRequestedBy)"
+                        HeaderText="Requested By"
+                        TextAlign="@TextAlign.Left"
+                        Width="40">
             </GridColumn>
         </GridColumns>
 
