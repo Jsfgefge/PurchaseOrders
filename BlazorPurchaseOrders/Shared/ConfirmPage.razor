@@ -1,0 +1,32 @@
+﻿<SfDialog @ref="DialogConfirm" 
+@bind-Visible="IsVisible"
+          AllowDragging="true"
+          IsModal="true">
+          <DialogTemplates>
+              <Header>@ConfirmationHeaderMessage</Header>
+              <Content>@ConfirmationContentMessage</Content>
+          </DialogTemplates>
+          <DialogButtons>
+              <DialogButton Content="Confirm" IsPrimary="true" OnClick="()=>OnConfirmationChange(true)"></DialogButton>
+              <DialogButton Content="Cancel" IsPrimary="false" OnClick="()=>OnConfirmationChange(false)"></DialogButton>
+          </DialogButtons>
+</SfDialog>
+@code {
+    SfDialog DialogConfirm;
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string ConfirmationHeaderMessage { get; set; }
+    [Parameter]
+    public string ConfirmationContentMessage { get; set; }
+    [Parameter]
+    public EventCallback<bool> ConfirmationChanged { get; set; }
+    public void OpenDialog() {
+        this.IsVisible = true;
+        this.StateHasChanged();
+    }
+    protected async Task OnConfirmationChange(bool value) {
+        this.IsVisible = false;
+        await ConfirmationChanged.InvokeAsync(value);
+    }
+}

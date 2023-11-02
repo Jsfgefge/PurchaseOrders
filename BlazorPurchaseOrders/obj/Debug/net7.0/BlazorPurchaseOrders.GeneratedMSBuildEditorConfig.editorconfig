@@ -32,6 +32,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/PreviewOrderPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJldmlld09yZGVyUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/PreviewOrderPage.razor.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJldmlld09yZGVyUGFnZS5yYXpvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/ProductPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdFBhZ2UucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -46,6 +54,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Pages/TaxPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGF4UGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Shared/ConfirmPage.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENvbmZpcm1QYWdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/PC/Documents/repos/PurchaseOrders/BlazorPurchaseOrders/Shared/LoginDisplay.razor]

@@ -36,9 +36,16 @@ namespace BlazorPurchaseOrders.Pages {
 
         [Parameter]
         public int POHeaderID { get; set; }
+        public bool ConfimationChanged { get; set; } = false;
+        public bool ConfirmOrderArchive { get; set; } = false;
+
         private string UserName;
 
         WarningPage Warning;
+        ConfirmPage ConfirmSaveOrder;
+        ConfirmPage ConfirmDeletion;
+        string ConfirmationHeaderMessage = "";
+        string ConfirmationContentMessage = "";
         string pagetitle = "Add an Order";
         string WarningHeaderMessage = "";
         string WarningContentMessage = "";
@@ -48,7 +55,6 @@ namespace BlazorPurchaseOrders.Pages {
 
         SfGrid<POLine> OrderLinesGrid;
         SfDialog DialogAddEditOrderLine;
-        SfDialog DialogDeleteOrderLine;
 
         public POLine addeditOrderLine = new POLine();
         public List<POLine> orderLines = new List<POLine>();
@@ -97,8 +103,20 @@ namespace BlazorPurchaseOrders.Pages {
                 WarningHeaderMessage = "Warning!";
                 WarningContentMessage = "Please select a supplier before adding order lines";
                 Warning.OpenDialog();
+                return;
+            }
+            if (orderLines.Count == 0) {
+                ConfirmationHeaderMessage = "ConfirmSave";
+                ConfirmationContentMessage = "There are no order lines. Please confirm order should be saved.";
+                ConfirmSaveOrder.OpenDialog();
             }
             else {
+                await OrderSaveProcess(true);
+            }
+        }
+
+        protected async Task OrderSaveProcess(bool saveConfirmed){
+            if (saveConfirmed) {
                 if (POHeaderID == 0) {
                     //Save the record
                     //bool Success = await POHeaderService.POHeaderInsert(orderaddedit);
@@ -121,7 +139,7 @@ namespace BlazorPurchaseOrders.Pages {
                 }
                 else {
                     bool Success = await POHeaderService.POHeaderUpdate(orderaddedit);
-                    foreach(var individualPOLine in orderLines) {
+                    foreach (var individualPOLine in orderLines) {
                         //If POLineHeaderID is positive it means it has been edited during the edit of this order
                         if (individualPOLine.POLineID > 0) {
                             Success = await POLineService.POLineUpdate(individualPOLine);
@@ -129,22 +147,18 @@ namespace BlazorPurchaseOrders.Pages {
                         else {
                             individualPOLine.POLineHeaderID = POHeaderID;
                             Success = await POLineService.POLineInsert(individualPOLine);
-                            }
+                        }
                     }
-                    foreach(var individualPOLine in OrderLinesToBeDeleted) {
+                    foreach (var individualPOLine in OrderLinesToBeDeleted) {
                         Success = await POLineService.POLineDeleteOne(individualPOLine);
                     }
                     //Clear the list of POLines to be deleted
                     OrderLinesToBeDeleted.Clear();
                     NavigationManager.NavigateTo("/");
                 }
-                //addeditOrderLine = new POLine(); //Ensures a blank form when adding
-                //addeditOrderLine.POLineNetPrice = 0;
-                //addeditOrderLine.POLineTaxID = 0;
-                //addeditOrderLine.POLineProductID = 0;
-                //await this.DialogAddEditOrderLine.Show();
             }
         }
+
 
         //Executes if user clivjs the Cancel button.
         void Cancel() {
@@ -198,14 +212,16 @@ namespace BlazorPurchaseOrders.Pages {
                 }
             }
             if (args.Item.Text == "Delete") {
-                //Code for deleting goes here
-                if (selectedPOLineID == -999) {
+                //Code for delete goes here
+                if (selectedPOLineID == 0) {
                     WarningHeaderMessage = "Warning!";
-                    WarningContentMessage = "Please select an Order Line from the grid";
+                    WarningContentMessage = "Please select an Order Line from the grid.";
                     Warning.OpenDialog();
                 }
-                else{
-                    await this.DialogDeleteOrderLine.Show();
+                else {
+                    ConfirmationHeaderMessage = "Confirm Deletion";
+                    ConfirmationContentMessage = "Please confirm that this order line should be deleted";
+                    ConfirmDeletion.OpenDialog();
                 }
             }
 
@@ -300,10 +316,6 @@ namespace BlazorPurchaseOrders.Pages {
                 }
             }
         }
-        public async void ConfirmDeleteNo() {
-            await this.DialogDeleteOrderLine.Hide();
-            selectedPOLineID = -999;
-        }
         private void OrderLineDelete() {
             if (selectedPOLineID > 0) {
                 //Order line has already been saved to the database, an was present at start of this order edit
@@ -314,10 +326,12 @@ namespace BlazorPurchaseOrders.Pages {
             orderLines.Remove(itemToRemove);
             OrderLinesGrid.Refresh();
         }
-        public async void ConfirmDeleteYes() {
-            OrderLineDelete();
-            await this.DialogDeleteOrderLine.Hide();
-            selectedPOLineID = -999;
+        protected void ConfirmDelete(bool deleteConfirmed) {
+            if (deleteConfirmed) {
+                OrderLineDelete();
+                StateHasChanged();
+                selectedPOLineID = 0;
+            }
         }
         private async Task CloseDialog() {
             await this.DialogAddEditOrderLine.Hide();

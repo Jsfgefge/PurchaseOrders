@@ -8,8 +8,13 @@
 
 <h3>@pagetitle</h3>
 
+
+@* POHeader options - Supplier Dropdown, Supplier info
+       DatePicker *@
+
+@* DataGrid -- POLines of the PO *@
 <EditForm Model="@orderaddedit" OnValidSubmit="@OrderSave">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <div class="grid-container">
         <div class="grid-child left-column">
             <SfDropDownList DataSource="@supplier"
@@ -40,7 +45,7 @@
             <SfTextBox Enabled="@supplierEneabled" Placeholder="Post Code"
                        FloatLabelType="@FloatLabelType.Never"
             @bind-Value="orderaddedit.POHeaderSupplierPostCode">
-            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierPostCode)"/>
+            </SfTextBox><ValidationMessage For="@(()=>orderaddedit.POHeaderSupplierPostCode)" />
             <SfTextBox Enabled="true" Placeholder="Email"
                        FloatLabelType="@FloatLabelType.Auto"
             @bind-Value="orderaddedit.POHeaderSupplierEmail">
@@ -51,21 +56,20 @@
                               FloatLabelType="@FloatLabelType.Always"
                               ShowSpinButton="false"
                               CssClass="e-style"
-                              @bind-Value="orderaddedit.POHeaderOrderNumber">
+            @bind-Value="orderaddedit.POHeaderOrderNumber">
             </SfNumericTextBox>
             <SfDatePicker TValue="DateTime"
                           Placeholder='Place Holder'
                           FloatLabelType="@FloatLabelType.Auto"
-                          @bind-Value="orderaddedit.POHeaderOrderDate">
+            @bind-Value="orderaddedit.POHeaderOrderDate">
             </SfDatePicker>
             <SfTextBox Enabled="false" Placeholder="Requested By"
                        FloatLabelType="@FloatLabelType.Always"
-                       @bind-Value="orderaddedit.POHeaderRequestedBy">
+            @bind-Value="orderaddedit.POHeaderRequestedBy">
             </SfTextBox>
         </div>
     </div>
     <br /><br />
-
     <SfGrid @ref="OrderLinesGrid"
             DataSource="@orderLines"
             Toolbar="@Toolbaritems"
@@ -167,6 +171,9 @@
     </div>
 </EditForm>
 
+@* SfDialog addeditorder
+
+*@
 <SfDialog @ref="DialogAddEditOrderLine" IsModal="true" Width="600px" ShowCloseIcon="true" Visible="false">
     <DialogTemplates>
         <Header>@dialogHeaderText</Header>
@@ -177,17 +184,18 @@
                         TItem="Product"
                         TValue="int"
                         Text="ProductID"
-                        @bind-Value="addeditOrderLine.POLineProductID"
+        @bind-Value="addeditOrderLine.POLineProductID"
                         FloatLabelType="@FloatLabelType.Always"
                         Placeholder="Select a Product"
                         Enabled="true">
             <DropDownListTemplates TItem="Product">
                 <HeaderTemplate>
-                    <span class='head'>
-                        <span class="productcode">Code
-                            <span class="description">
-                                Description
-                            </span>
+                    <span class="head">
+                        <span class="productcode">
+                            Code
+                        </span>
+                        <span class="description">
+                            Description
                         </span>
                     </span>
                 </HeaderTemplate>
@@ -209,7 +217,7 @@
                    Placeholder="Product Description"
                    FloatLabelType="@FloatLabelType.Always"
         @bind-Value="addeditOrderLine.POLineProductDescription">
-        </SfTextBox><div class="flex-container"><ValidationMessage For="@(()=>addeditOrderLine.POLineProductDescription)"/></div>
+        </SfTextBox><div class="flex-container"><ValidationMessage For="@(()=>addeditOrderLine.POLineProductDescription)" /></div>
 
         <div class="flex-container">
             <SfNumericTextBox Enabled="true"
@@ -220,8 +228,8 @@
                               Decimals="0"
                               ValidateDecimalOnType=true
                               CssClass="e-style"
-                              @bind-Value="addeditOrderLine.POLineProductQuantity"
-                              @onfocusout="@POLineCalc">
+            @bind-Value="addeditOrderLine.POLineProductQuantity"
+            @onfocusout="@POLineCalc">
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="true"
                               Placeholder="Unit Price"
@@ -231,8 +239,8 @@
                               Decimals="2"
                               ValidateDecimalOnType="true"
                               CssClass="e-style"
-                              @bind-Value="addeditOrderLine.POLineProductUnitPrice"
-                              @onfocusout='@POLineCalc'>
+            @bind-Value="addeditOrderLine.POLineProductUnitPrice"
+            @onfocusout='@POLineCalc'>
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="false"
                               Placeholder="Net Price"
@@ -240,7 +248,7 @@
                               ShowSpinButton="false"
                               Format="c2"
                               CssClass="e-style"
-                              @bind-Value="addeditOrderLine.POLineNetPrice">
+            @bind-Value="addeditOrderLine.POLineNetPrice">
             </SfNumericTextBox>
         </div>
         <div class="flex-container">
@@ -248,20 +256,20 @@
                             TItem="Tax"
                             TValue="int"
                             Text="TaxID"
-                            @bind-Value="addeditOrderLine.POLineTaxID"
+            @bind-Value="addeditOrderLine.POLineTaxID"
                             FloatLabelType="@FloatLabelType.Always"
                             Placeholder="Tax Rate"
                             Enabled="true">
                 <DropDownListFieldSettings Text="TaxDescription" Value="TaxID"></DropDownListFieldSettings>
-                <DropDownListEvents TItem="Tax" TValue="int" OnValueSelect="OnChangeTax"></DropDownListEvents>                    
+                <DropDownListEvents TItem="Tax" TValue="int" OnValueSelect="OnChangeTax"></DropDownListEvents>
             </SfDropDownList>
             <SfNumericTextBox Enabled="false"
-                        Placeholder="Tax Rate %"
-                        FloatLabelType="@FloatLabelType.Always"
-                        ShowSpinButton="false"
-                        Format="p2"
+                              Placeholder="Tax Rate %"
+                              FloatLabelType="@FloatLabelType.Always"
+                              ShowSpinButton="false"
+                              Format="p2"
                               CssClass="e-style"
-                        @bind-Value="addeditOrderLine.POLineTaxRate">
+            @bind-Value="addeditOrderLine.POLineTaxRate">
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="false"
                               Placeholder="Tax Amount"
@@ -269,7 +277,7 @@
                               ShowSpinButton="false"
                               Format="c2"
                               CssClass="e-style"
-                              @bind-Value="addeditOrderLine.POLineTaxAmount">
+            @bind-Value="addeditOrderLine.POLineTaxAmount">
             </SfNumericTextBox>
             <SfNumericTextBox Enabled="false"
                               Placeholder="Total Price"
@@ -277,7 +285,7 @@
                               ShowSpinButton="false"
                               Format="c2"
                               CssClass="e-style"
-                              @bind-Value="addeditOrderLine.POLineGrossPrice">
+            @bind-Value="addeditOrderLine.POLineGrossPrice">
             </SfNumericTextBox>
         </div>
         <br />
@@ -290,7 +298,7 @@
     </EditForm>
 </SfDialog>
 
-<SfDialog @ref="DialogDeleteOrderLine" IsModal="true" Width="500px" ShowCloseIcon="true" Visible="false">
+@* <SfDialog @ref="DialogDeleteOrderLine" IsModal="true" Width="500px" ShowCloseIcon="true" Visible="false">
     <DialogTemplates>
         <Header>Confirm Delete</Header>
         <Content>
@@ -303,9 +311,23 @@
         <DialogButton Content="Delete" IsPrimary="true" OnClick="@ConfirmDeleteYes"></DialogButton>
         <DialogButton Content="Cancel" IsPrimary="true" OnClick="@ConfirmDeleteNo"></DialogButton>
     </DialogButtons>
-</SfDialog>
+</SfDialog> *@
 
-<WarningPage @ref="Warning" WarningHeaderMessage="@WarningHeaderMessage" WarningContentMessage="@WarningContentMessage"/>
+<ConfirmPage @ref = "ConfirmDeletion"
+             ConfirmationContentMessage="@ConfirmationContentMessage"
+             ConfirmationHeaderMessage="@ConfirmationHeaderMessage"
+             ConfirmationChanged="ConfirmDelete">
+
+</ConfirmPage>
+
+<WarningPage @ref="Warning" WarningHeaderMessage="@WarningHeaderMessage" WarningContentMessage="@WarningContentMessage" />
+
+@* Confirmation SfDialog *@
+<ConfirmPage @ref="ConfirmSaveOrder"
+             ConfirmationHeaderMessage="@ConfirmationHeaderMessage"
+             ConfirmationContentMessage="@ConfirmationContentMessage"
+             ConfirmationChanged="OrderSaveProcess">
+</ConfirmPage>
 
 <style>
     .grid-container {
@@ -314,16 +336,54 @@
         grid-template-columns: 1fr 1fr; /*Relative width of each column (1fr 1fr is equivalent to, say, 33fr 33fr)*/
         grid-gap: 75px; /*size if the gap between columns*/
     }
-    .flex-container{
-        display:flex;
-        flex-direction:row; /*Causes tab to move along eow an then onto following row*/
+
+    .flex-container {
+        display: flex;
+        flex-direction: row; /*Causes tab to move along eow an then onto following row*/
         justify-content: space-evenly; /*equal space left and right margin and between elements*/
-        margin:10px; /*this appears to be vertical margin between rows*/
-        column-gap:10px; /*Gap between columns*/
+        margin: 10px; /*this appears to be vertical margin between rows*/
+        column-gap: 10px; /*Gap between columns*/
     }
+
     .e-numeric.e-style .e-control.e-numerictextbox {
         text-align: right;
         padding: 0px 5px 0px 0px;
+    }
+
+    .head, .item {
+        display: table;
+        width: 100%;
+        margin: auto;
+        text-align: left;
+    }
+
+    .head {
+        height: 30px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .productcode,
+    .description {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .productcode {
+        width: 25%;
+    }
+
+    .description {
+        width: 75%;
+    }
+
+    .head .description {
+        text-indent: 17px;
+    }
+
+    .head .description {
+        text-indent: 14px;
     }
 </style>
 

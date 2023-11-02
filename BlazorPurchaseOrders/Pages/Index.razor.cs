@@ -4,6 +4,8 @@ using BlazorPurchaseOrders.Data;
 using Syncfusion.Blazor.Popups;
 using BlazorPurchaseOrders.Shared;
 using Syncfusion.Blazor.Grids;
+using System.Runtime.InteropServices;
+using System.Data;
 
 namespace BlazorPurchaseOrders.Pages {
     public partial class Index : ComponentBase {
@@ -19,8 +21,13 @@ namespace BlazorPurchaseOrders.Pages {
 
         private int POHeaderID;
         WarningPage Warning;
+        ConfirmPage ConfirmOrderDelete;
+        string ConfirmHeaderMessage = "";
+        string ConfirmContentMessage = "";
         string WarningHeaderMessage = "";
         string WarningContentMessage = "";
+        POHeader orderHeader = new POHeader();
+        public bool ConfirmationChanged { get; set; } = false;
 
         protected override async Task OnInitializedAsync() {
             poheader = await POHeaderService.POHeaderList();
@@ -32,7 +39,7 @@ namespace BlazorPurchaseOrders.Pages {
         public void RowSelectHandler(RowSelectEventArgs<POHeader> args) {
             selectedPOHeaderID = args.Data.POHeaderID;
         }
-        public void ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args) {
+        public async void ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args) {
             if (args.Item.Text == "Add") {
                 //Code for adding goes here
                 POHeaderID = 0;
@@ -52,6 +59,27 @@ namespace BlazorPurchaseOrders.Pages {
             }
             if (args.Item.Text == "Delete") {
                 //Code for deleting
+                if (selectedPOHeaderID == 0) {
+                    WarningHeaderMessage = "Warning!";
+                    WarningContentMessage = "Please select an Order grom the grid.";
+                    Warning.OpenDialog();
+                }
+                else {
+                    orderHeader = await POHeaderService.POHeader_GetOne(selectedPOHeaderID);
+                    ConfirmHeaderMessage = "Confirm Deletion";
+                    ConfirmContentMessage = "Please confirm that this rder should be deleted.";
+                    ConfirmOrderDelete.OpenDialog();
+
+                }
+            }
+        }
+        protected async Task ConfirmOrderArchive(bool archiveConfirmed) {
+            if (archiveConfirmed) {
+                orderHeader.POHeaderIsArchived = true;
+                bool Success = await POHeaderService.POHeaderUpdate(orderHeader);
+                poheader = await POHeaderService.POHeaderList();
+                StateHasChanged();
+                selectedPOHeaderID = 0;
             }
         }
     }
