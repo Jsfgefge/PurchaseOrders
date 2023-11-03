@@ -12,8 +12,9 @@ namespace BlazorPurchaseOrders.Data {
                                               string POHeaderSupplierPostCode,
                                               string POHeaderSupplierEmail,
                                               string POHeaderRequestedBy);
-        Task<IEnumerable<POHeader>> POHeaderList();
+        Task<IEnumerable<POHeader>> POHeaderList(string @UserName);
         Task<POHeader> POHeader_GetOne(int POHeaderID);
         Task<bool> POHeaderUpdate(POHeader poheader);
+        Task<POHeader> POHeader_GetOneByGuid(Guid @POHeaderGuid);
     }
 }

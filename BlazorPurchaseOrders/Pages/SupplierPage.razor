@@ -1,4 +1,5 @@
 ﻿@page "/supplier"
+@attribute [Authorize(Roles = "Admin, Manager")]
 @using BlazorPurchaseOrders.Data
 @using Syncfusion.Blazor.Navigations
 

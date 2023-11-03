@@ -35,7 +35,8 @@ namespace BlazorPurchaseOrders.Pages {
         IEnumerable<POLine> orderLinesByPOHeader;
 
         [Parameter]
-        public int POHeaderID { get; set; }
+        public Guid POHeaderGuid { get; set; }
+        private int POHeaderID { get; set; } = 0;
         public bool ConfimationChanged { get; set; } = false;
         public bool ConfirmOrderArchive { get; set; } = false;
 
@@ -87,12 +88,13 @@ namespace BlazorPurchaseOrders.Pages {
             orderaddedit.POHeaderRequestedBy = UserName;
 
 
-            if (POHeaderID == 0) {
+            if (POHeaderGuid == Guid.Empty) {
                 pagetitle = "Add an Order";
             }
             else {
                 pagetitle = "Edit an Order";
-                orderaddedit = await POHeaderService.POHeader_GetOne(POHeaderID);
+                orderaddedit = await POHeaderService.POHeader_GetOneByGuid(POHeaderGuid);
+                POHeaderID = orderaddedit.POHeaderID;
                 orderLinesByPOHeader = await POLineService.POLine_GetByPOHeader(POHeaderID);
                 orderLines = orderLinesByPOHeader.ToList();
                 supplierEneabled = false;
@@ -213,7 +215,7 @@ namespace BlazorPurchaseOrders.Pages {
             }
             if (args.Item.Text == "Delete") {
                 //Code for delete goes here
-                if (selectedPOLineID == 0) {
+                if (selectedPOLineID == -999) {
                     WarningHeaderMessage = "Warning!";
                     WarningContentMessage = "Please select an Order Line from the grid.";
                     Warning.OpenDialog();
@@ -330,7 +332,7 @@ namespace BlazorPurchaseOrders.Pages {
             if (deleteConfirmed) {
                 OrderLineDelete();
                 StateHasChanged();
-                selectedPOLineID = 0;
+                selectedPOLineID = -999;
             }
         }
         private async Task CloseDialog() {

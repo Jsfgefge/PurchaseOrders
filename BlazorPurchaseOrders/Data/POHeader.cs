@@ -29,6 +29,10 @@ namespace BlazorPurchaseOrders.Data {
         public decimal POHeaderOrderTotal { get; }
 
         public string SupplierName { get; }
-        public string TotalOrderValue { get; }
+        public decimal TotalOrderValue { get; }
+        public decimal NetPrice { get; set; }
+        public decimal Tax { get; set; }
+
+        public System.Guid POHeaderGuid { get; set; }
     }
 }

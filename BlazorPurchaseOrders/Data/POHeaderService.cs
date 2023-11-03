@@ -47,10 +47,12 @@ namespace BlazorPurchaseOrders.Data{
         }
         //Get a list of poheader rows (SQL Select)
         //This Only works if you're already created the stored procedure
-        public async Task<IEnumerable<POHeader>> POHeaderList() {
+        public async Task<IEnumerable<POHeader>> POHeaderList(string @UserName) {
             IEnumerable<POHeader> poheaders;
+            var parameters = new DynamicParameters();
+            parameters.Add("@UserName", UserName);
             using (var conn = new SqlConnection(_configuration.Value)) {
-                poheaders = await conn.QueryAsync<POHeader>("spPOHeader_List", commandType: CommandType.StoredProcedure);
+                poheaders = await conn.QueryAsync<POHeader>("spPOHeader_List", parameters, commandType: CommandType.StoredProcedure);
             }
             return poheaders;
         }
@@ -60,6 +62,15 @@ namespace BlazorPurchaseOrders.Data{
             parameters.Add("@POHeaderID", POHeaderID, DbType.Int32);
             using(var conn = new SqlConnection(_configuration.Value)) {
                 poheader = await conn.QueryFirstOrDefaultAsync<POHeader>("spPOHeader_GetOne", parameters, commandType: CommandType.StoredProcedure);
+            }
+            return poheader;
+        }
+        public async Task<POHeader> POHeader_GetOneByGuid(Guid @POHeaderGuid) {
+            POHeader poheader = new POHeader();
+            var parameters = new DynamicParameters();
+            parameters.Add("@POHeaderGuid", POHeaderGuid, DbType.Guid);
+            using(var conn = new SqlConnection(_configuration.Value)) {
+                poheader = await conn.QueryFirstOrDefaultAsync<POHeader>("spPOHeader_GetOneByGuid", parameters, commandType: CommandType.StoredProcedure);
             }
             return poheader;
         }
